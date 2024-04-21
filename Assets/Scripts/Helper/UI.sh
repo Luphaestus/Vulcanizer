@@ -18,9 +18,6 @@ UI() {
     modified_text=$(echo "$input_text" | sed "s/!!/Error: /" | sed "s/^!/$replacement/")
     printf "${color}%s${RESET}\n" "$modified_text"
 
-    if [[ "$input_text" == *"!!"* ]]; then
-      exit 1
-    fi
   elif [[ "${input_text:0:2}" == "t|" ]]; then
     input_text="${input_text:2}"
     local text_length=${#input_text}
@@ -33,6 +30,8 @@ UI() {
       "$left_padding" "$input_text" "$right_padding"
   elif [[ "$input_text" == "d" ]]; then
     echo -e $args "${SUCCESS_FG} Done! ${RESET}"
+  elif [[ "$input_text" == "f" ]]; then
+    echo -e $args "${ERROR_FG} Failed! ${RESET}"
   else
     left_of_colon="${input_text%%:*}"
     right_of_colon="${input_text#*:}"

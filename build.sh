@@ -5,6 +5,15 @@ COMMON_COMMANDS=()
 
 CONFIG=./config.sh
 . $CONFIG
+
+if [ "$FOR_EXYNOS" = "y" ]; then
+  TARGET=$EXYNOS_TARGET
+  MODEL=("${EXYNOS_MODELS[@]}")
+else
+  TARGET=$SNAPDRAGON_TARGET
+  MODEL=("${SNAPDRAGON_MODELS[@]}")
+fi
+
 UI=$HELPER_DIR/UI.sh
 . $UI
 
@@ -19,8 +28,7 @@ for script in $(find $ASSETS_DIR -type f -name "*.sh"); do
   . $script
   UI "d"
 done
-
 for cmd in "${COMMON_COMMANDS[@]}"; do
-    UI "Running: $cmd..."
-    eval "$cmd"
+  echo " "
+  eval "$cmd"
 done

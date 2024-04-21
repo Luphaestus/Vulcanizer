@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Vulcanizer.iml" filepath="$PROJECT_DIR$/Vulcanizer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Vulcanizer/Vulcanizer.iml" filepath="$PROJECT_DIR$/Vulcanizer/Vulcanizer.iml" />
     </modules>
   </component>
 </project>

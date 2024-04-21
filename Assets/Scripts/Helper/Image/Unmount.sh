@@ -1,4 +1,4 @@
-UnmountAll() {
+Unmount_All() {
   local target_dir="$1"
 
   if [ ! -d "$target_dir" ]; then
