@@ -1,4 +1,7 @@
 *.img
+
 /External/*
+
 !/External/**/
 !/External/**/.gitkeep
+!/External/**/*
