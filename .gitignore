@@ -1,3 +1,4 @@
 *.img
-/External/
-!/External/apkstuff
+/External/*
+!/External/**/
+!/External/**/.gitkeep
