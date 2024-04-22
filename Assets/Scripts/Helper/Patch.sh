@@ -1,11 +1,18 @@
-SeSed()
-{
-  commands="$*"
+SeSed() {
+  # Last argument is the directory
   dir="${!#}"
+  # All other arguments form the sed command
+  commands="${@:1:$(($#-1))}"
+  # Get the SELinux context
   textlabel=$(ls -dZ "$dir")
   selabel=$(echo "$textlabel" | cut -d " " -f1)
-  echo $commands
-  sed $commands
+
+
+  # Execute the sed command with proper formatting
+  echo "Executing sed with: sed $commands" $dir
+  sed $commands $dir
+
+  # Set the original SELinux context back
   chcon $selabel $dir
 }
 
@@ -17,6 +24,9 @@ Commands_from_file()
 
   while IFS= read -r line; do
     success=false
+    if [ -z "$line" ] || [[ $line == \#* ]]; then
+      continue
+    fi
     echo "Processing line: $line"
     for dir in "${PATCH_DIRS[@]}"; do
       cd $dir >/dev/null

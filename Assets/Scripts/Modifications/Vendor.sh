@@ -15,36 +15,26 @@ Build_Exynos_Vendor()
   fi
 
   UI "t|Building Vendor"
-  Get_Target "Vendor" "y" "Y" "y"
-  Get_Source "Vendor" "y" "y" "y"
+  Get_Target "Vendor" "y" "Y" "n"
+  Get_Source "Vendor" "y" "y" "n"
 
-  if [[ $COMMON_VENDOR != "y" ]]; then
-    PATCH_DIRS=("${Source_Mount[@]}")
-    PATCH_MODEL=()
-    for dir in "${Patch_Dirs[@]}"; do
-      PATCH_MODEL+=($(basename "$dir"))
-    done
-  else
-    UI "t|Creating Common Vendor"
-    MOUNTED_COMMON_IMAGES=("${Source_Mount[@]}")
-    echo ${Source_Path[0]}
-        echo ${Source_Path[0]}
+  PATCH_DIRS=("${Source_Mount[@]}")
+  PATCH_MODEL=()
+  for dir in "${Patch_Dirs[@]}"; do
+    PATCH_MODEL+=($(basename "$dir"))
+  done
 
-    echo ${Source_Path[0]}
-
-    Common_Image "$WORKING_DIR/Vendor/Shared/CommomVendor" ${Source_Path[0]}
-  fi
-
-  UI "t|Patching Vendor(s)"
-
-  exit 1
-
-  Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_DELETE "rm -r"
+  Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_DELETE "rm -r %s"
   Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_COPY "sudo rm -r %s" "n"
 
   Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_COPY "sudo cp -a $Target_Mount/%s %s"
   Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_MISC "%s"
 
+  if [[ $COMMON ]]; then
+    UI "t|Patching Vendor(s)"
+    MOUNTED_COMMON_IMAGES=("${Source_Mount[@]}")
+    Common_Image "$WORKING_DIR/Vendor/Shared/CommomVendor" ${Source_Path[0]}
+  fi
 
 }
 

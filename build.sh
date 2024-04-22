@@ -32,3 +32,5 @@ for cmd in "${COMMON_COMMANDS[@]}"; do
   echo " "
   eval "$cmd"
 done
+
+

@@ -5,13 +5,14 @@ Common_Image()
   commonmount=$1
   imgpath=$2
   imgname=$3
-  echo $commonmount
-  mkdir -p $commonmount#
-  echo $imgpath
-  umount $imgpath
+  mkdir -p $commonmount
+  sudo umount $imgpath
+  rm -rf $commonmount.img
   sudo cp -a $imgpath $commonmount.img
   Mount $imgpath "${MOUNTED_COMMON_IMAGES[0]}"
+
   Mount $commonmount.img $commonmount
+
   for ((index = 1; index < ${#MOUNTED_COMMON_IMAGES[@]}; index++)); do
       mountedimg="${MOUNTED_COMMON_IMAGES[$index]}"
       echo " diff $mountedimg $commonmount"
@@ -26,12 +27,12 @@ Common_Image()
               img_mounted=${MOUNTED_COMMON_IMAGES[$i]}
               mkdir -p "$(dirname "$img_mounted-specific/$trimmed_string")"
               sudo cp -a "$img_mounted/$trimmed_string" "$img_mounted-specific/$trimmed_string"
-              if [[ $EROFS == "y" ]]; then
-                ln -s /odm/$imgname/$trimmed_string
-              fi
             done
 
           rm "$commonmount/$trimmed_string"
+          if [[ $EROFS == "y" ]]; then
+            ln -s /odm/$imgname/$trimmed_string $commonmount/$trimmed_string
+          fi
 
           done <<< "$diff_output"
       else
@@ -43,20 +44,19 @@ Common_Image()
         while IFS= read -r line; do
           echo "$line"
           if echo "$line" | grep -q "$commonmount"; then
-
-            trimmed_string="${line#${MOUNTED_COMMON_IMAGES[$index]}/}"
+            trimmed_string="${line#$commonmount/}"
             echo "Only pin $trimmed_string"
             for ((i=$index; i>=0; i--))  do
               img_mounted=${MOUNTED_COMMON_IMAGES[$i]}
               if [ -e "$img_mounted/$trimmed_string" ] && [ ! -e "$img_mounted-specific/$trimmed_string" ]; then
                   mkdir -p "$(dirname "$img_mounted-specific/$trimmed_string")"
                   cp -a "$img_mounted/$trimmed_string"  "$img_mounted-specific/$trimmed_string"
-                  if [[ $EROFS == "y" ]]; then
-                    ln -s /odm/$imgname/$trimmed_string
-                  fi
               fi
             done
               rm -rf "$commonmount/$trimmed_string"
+              if [[ $EROFS == "y" ]]; then
+                ln -s /odm/$imgname/$trimmed_string $commonmount/$trimmed_string
+              fi
           else
             img_mounted=${MOUNTED_COMMON_IMAGES[$index]}
 
@@ -65,7 +65,7 @@ Common_Image()
             mkdir -p  "$(dirname "$img_mounted-specific/$trimmed_string")"
             cp -a "$img_mounted/$trimmed_string" "$img_mounted-specific/$trimmed_string"
             if [[ $EROFS == "y" ]]; then
-              ln -s /odm/$imgname/$trimmed_string
+              ln -s /odm/$imgname/$trimmed_string $commonmount/$trimmed_string
             fi
           fi
           done <<< "$diff_output"

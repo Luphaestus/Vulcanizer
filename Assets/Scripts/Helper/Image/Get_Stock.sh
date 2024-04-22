@@ -3,21 +3,20 @@ Get_Target()
   local image_name=$1
   local mount=$2
   local reset=$3
-  local dry_run=$4
   if [[ $reset = "y" ]]; then
     Target_Path=()
     Target_Mount=()
   fi
   UI "----" "\n"
-  Dry_Run rm -rf $WORKING_DIR/$image_name/Target/$TARGET.img $dry_run
+  rm -rf $WORKING_DIR/$image_name/Target/$TARGET.img 
   UI "Copying: $TARGET $image_name"
-  Dry_Run mkdir -p $WORKING_DIR/$image_name/Target/ $dry_run
-  Dry_Run cp -a $STOCK_DIR/$image_name/Target/$TARGET.img $WORKING_DIR/$image_name/Target/ $dry_run
+  echo "cp -a $STOCK_DIR/$image_name/Target/$TARGET.img $WORKING_DIR/$image_name/Target/"
+  mkdir -p $WORKING_DIR/$image_name/Target/ 
+  sudo cp -a $STOCK_DIR/$image_name/Target/$TARGET.img $WORKING_DIR/$image_name/Target/
   UI "d"
-
   if [[ $mount == "y" ]]; then
-    Dry_Run mkdir -p $WORKING_DIR/$image_name/Target/$TARGET $dry_run
-    Mount $WORKING_DIR/$image_name/Target/$TARGET.img $WORKING_DIR/$image_name/Target/$TARGET $dry_run
+    mkdir -p $WORKING_DIR/$image_name/Target/$TARGET 
+    Mount $WORKING_DIR/$image_name/Target/$TARGET.img $WORKING_DIR/$image_name/Target/$TARGET 
     Target_Mount=$WORKING_DIR/$image_name/Target/$TARGET
   fi
   Target_Path=$WORKING_DIR/$image_name/Target/$TARGET.img
@@ -29,7 +28,6 @@ Get_Source()
   local image_name=$1
   local mount=$2
   local reset=$3
-  local dry_run=$4
 
   if [[ $reset != "n" ]]; then
     Source_Path=()
@@ -38,15 +36,15 @@ Get_Source()
 
   for model in "${MODEL[@]}"; do
     UI "----" "\n"
-    Dry_Run rm -rf $WORKING_DIR/$image_name/Source/$model/$model.img $dry_run
+    rm -rf $WORKING_DIR/$image_name/Source/$model/$model.img
     UI "Copying: $model $image_name"
-    Dry_Run mkdir -p $WORKING_DIR/$image_name/Source/$model/ $dry_run
-    Dry_Run cp -a $STOCK_DIR/$image_name/Source/$model.img $WORKING_DIR/$image_name/Source/$model/ $dry_run
+     mkdir -p $WORKING_DIR/$image_name/Source/$model/ 
+     cp -a $STOCK_DIR/$image_name/Source/$model.img $WORKING_DIR/$image_name/Source/$model/ 
     UI "d"
 
     if [[ $mount == "y" ]]; then
-      Dry_Run mkdir -p $WORKING_DIR/$image_name/Source/$model $dry_run
-      Mount $WORKING_DIR/$image_name/Source/$model/$model.img $WORKING_DIR/$image_name/Source/$model/$model $dry_run
+      mkdir -p $WORKING_DIR/$image_name/Source/$model
+      Mount $WORKING_DIR/$image_name/Source/$model/$model.img $WORKING_DIR/$image_name/Source/$model/$model 
       Source_Mount+=($WORKING_DIR/$image_name/Source/$model/$model)
     fi
     Source_Path+=($WORKING_DIR/$image_name/Source/$model/$model.img)
