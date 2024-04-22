@@ -15,16 +15,13 @@ Mount(){
       UI "d"
       UI "Mounting: $(basename "$image" | cut -d '.' -f 1)"
   fi
-  echo HEHEHEH
 
   current_size=$(du -m "$1" | awk '{print $1}')
   e2fsck -fa $1 >/dev/null
-  echo HEHEHEH
 
   fixed_size=500
   new_size=$((current_size + fixed_size))
   resize2fs $1 ${new_size}M  2>&1 | grep -v resize2fs >/dev/null
-  echo HEHEHEH
   mkdir -p "$2" >/dev/null
   sudo mount -o rw $1 $2
   UI "d"
