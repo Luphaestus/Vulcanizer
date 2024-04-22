@@ -30,7 +30,7 @@ Build_Exynos_Vendor()
   Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_COPY "sudo cp -a $Target_Mount/%s %s"
   Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_MISC "%s"
 
-  if [[ $COMMON ]]; then
+  if [[ $COMMON_VENDOR == "y" ]]; then
     UI "t|Patching Vendor(s)"
     MOUNTED_COMMON_IMAGES=("${Source_Mount[@]}")
     Common_Image "$WORKING_DIR/Vendor/Shared/CommomVendor" ${Source_Path[0]}
