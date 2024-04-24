@@ -1,27 +1,2 @@
-find . -depth -type f -name "*uwb*" -exec rm -f {} +
-#SeSed -i 's/fileencryption=ice,//g' "./etc/fstab.exynos990"
-#Vendor_C2x_Manifest
-#
-#rm -rf ../slens
-#mkdir ../slens
-#cp -a "saiv/image_understanding/db/slens"* ../slens/
-#rm -rf ../aic
-#mkdir ../aic
-#cp -a "etc/saiv/image_understanding/db/aic"* ../aic/
-#
-#rm -rf "saiv"
-#rm -rf "etc/saiv"
-#rm -rf "etc/midas"
-#cp -a "$Target_Mount/saiv" "./"
-#cp -a "$Target_Mount/etc/saiv" "etc/"
-#p -a "$Target_Mount/etc/midas" "etc/"
-#s etc/midas
-#
-#rm -rf "etc/saiv/image_understanding/db/slens"*
-#cp -a ../slens/* "saiv/image_understanding/db/"
-#rm -rf ../slens
-#
-#rm -rf  "etc/saiv/image_understanding/db/aic*"
-#cp -a ../aic/* "etc/saiv/image_understanding/db/"
-#rm -rf ../aic
-#SeSed -i "'s/p3s/p3s, v3s/g'" "etc/midas/midas_config.json"
+#find . -depth -type f -name "*uwb*" -exec rm -f {} +
+

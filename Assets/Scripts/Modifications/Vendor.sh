@@ -1,3 +1,4 @@
+#MOVE WHEN DOING SYSTEM PATCHES
 deleteTag()
 {
     tagname=$1
@@ -10,13 +11,18 @@ deleteTag()
 
 Build_Exynos_Vendor()
 {
+  ####### Testing vars #######
+  local copymount_vendor="y"
+
   if [[ $CREATE_VENDOR != "y" ]]; then
     return 0
   fi
 
+
   UI "t|Building Vendor"
-  Get_Target "Vendor" "y" "Y" "n"
-  Get_Source "Vendor" "y" "y" "n"
+
+  Get_Target "Vendor" "y" "Y" $copymount_vendor
+  Get_Source "Vendor" "y" "y" $copymount_vendor
 
   PATCH_DIRS=("${Source_Mount[@]}")
   PATCH_MODEL=()
@@ -24,17 +30,24 @@ Build_Exynos_Vendor()
     PATCH_MODEL+=($(basename "$dir"))
   done
 
-  Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_DELETE "rm -r %s"
-  Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_COPY "sudo rm -r %s" "n"
+  if [[ $PATCH_VENDOR == "y" ]]; then
+    UI "t|Patching Vendor(s)"
 
-  Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_COPY "sudo cp -a $Target_Mount/%s %s"
-  Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_MISC "%s"
+    Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_DELETE "rm -r %s"
+    Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_COPY "sudo rm -r %s" "n"
+
+    Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_COPY "sudo cp -a $Target_Mount/%s %s"
+    Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_MISC "%s"
+  fi
 
   if [[ $COMMON_VENDOR == "y" ]]; then
-    UI "t|Patching Vendor(s)"
+    UI "t|Creating Common Vendors"
     MOUNTED_COMMON_IMAGES=("${Source_Mount[@]}")
     Common_Image "$WORKING_DIR/Vendor/Shared/CommomVendor" ${Source_Path[0]}
   fi
+
+  Unmount_Target "Vendor"
+  Unmount_Source "Vendor"
 
 }
 

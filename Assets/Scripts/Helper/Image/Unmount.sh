@@ -15,3 +15,15 @@ Unmount_All() {
     fi
   done < <(find "$target_dir" -type d -print0 | sort -r)
 }
+
+Unmount() {
+  local image_path=$1
+  local mounted_dir=$2
+
+  UI "Unmounting: $(basename $mounted_dir)"
+  sudo umount $mounted_dir
+  rm -rf $mounted_dir
+  e2fsck -fa "$image_path" >/dev/null
+  resize2fs -M "$image_path" 2>&1 | grep -v resize2fs >/dev/null
+  UI "d"
+}

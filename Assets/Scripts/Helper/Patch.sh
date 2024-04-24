@@ -27,22 +27,24 @@ Commands_from_file()
     if [ -z "$line" ] || [[ $line == \#* ]]; then
       continue
     fi
-    echo "Processing line: $line"
+    UI "Processing line: $line" $OVERWRITE
     for dir in "${PATCH_DIRS[@]}"; do
       cd $dir >/dev/null
       full_command="${command//%s/$line}"
-      echo $full_command
-      if eval "$full_command"  ; then
+      if eval "$full_command 2>/dev/null"  ; then
         success=true
       fi
 
       cd - >/dev/null
     done
     if [ "$success" = false ]; then
-      UI "!!$Command $full_command"
       if [[ $force != "n" ]]; then
+        UI "!!$Command $full_command"
         return 1
+      else
+        UI "!$Command $full_command"
       fi
+
     fi
   done < "$file_path"
 }
