@@ -79,7 +79,7 @@ Get_Source()
         Mount $WORKING_DIR/$image_name/Source/$model/$model.img $WORKING_DIR/$image_name/Source/$model/$model
       fi
       Source_Mount+=($WORKING_DIR/$image_name/Source/$model/$model)
-    elif [[ $imgsuffix == ".img" ]];
+    elif [[ $imgsuffix == ".img" ]]; then
       Source_Mount+=($WORKING_DIR/$image_name/Source/$model/$model)
     fi
     
