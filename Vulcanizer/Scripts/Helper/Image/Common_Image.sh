@@ -22,7 +22,8 @@ Common_Image()
   for ((index = 1; index < ${#MOUNTED_COMMON_IMAGES[@]}; index++)); do
       mountedimg="${MOUNTED_COMMON_IMAGES[$index]}"
       UI "diff: $mountedimg $commonmount"
-      INDENT=$$INDENT_ALT
+      echo " "
+      INDENT= $INDENT_ALT
       diff_output=$(sudo diff -rq "$mountedimg" "$commonmount" 2>/dev/null| grep differ | awk '{print $2}')
       if [[ ! -z "${diff_output// }" ]]; then
         while IFS= read -r line; do
@@ -49,7 +50,7 @@ Common_Image()
         while IFS= read -r line; do
           if echo "$line" | grep -q "$commonmount"; then
             trimmed_string="${line#$commonmount/}"
-            echo -ne "$OVERWRITE Only in $trimmed_string"
+            echo -ne "$INDENT$OVERWRITE Only in $trimmed_string"
             for ((i=$index; i>=0; i--))  do
               img_mounted=${MOUNTED_COMMON_IMAGES[$i]}
               if [ -e "$img_mounted/$trimmed_string" ] && [ ! -e "$img_mounted-specific/$trimmed_string" ]; then
@@ -65,7 +66,7 @@ Common_Image()
             img_mounted=${MOUNTED_COMMON_IMAGES[$index]}
 
             trimmed_string="${line#${MOUNTED_COMMON_IMAGES[$index]}/}"
-            echo -ne "$OVERWRITE Only pin $line"
+            echo -ne "$INDENT$OVERWRITE Only pin $line"
             mkdir -p  "$(dirname "$img_mounted-specific/$trimmed_string")"
             cp -a "$img_mounted/$trimmed_string" "$img_mounted-specific/$trimmed_string"
             if [[ $EROFS == "y" ]]; then
@@ -79,4 +80,5 @@ Common_Image()
     echo -e $OVERWRITE$SUCCESS_FG"Successfully resolved unique files$RESET"
     INDENT=""
   done
+  echo " "
 }

@@ -51,7 +51,7 @@ Build_Exynos_Vendor()
     fi
     Unmount $commonmount $commonmount.img
   fi
-
+  echo " "
   UI "h|Cleaning Up"
   Unmount_Target "Vendor"
   Unmount_Source "Vendor"

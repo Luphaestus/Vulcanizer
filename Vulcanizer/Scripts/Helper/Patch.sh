@@ -27,7 +27,7 @@ Commands_from_file()
     if [ -z "$line" ] || [[ $line == \#* ]]; then
       continue
     fi
-    UI "Processing line: $line" $OVERWRITE
+    echo -ne ${OVERWRITE}"Processing line: $line" 
     for dir in "${PATCH_DIRS[@]}"; do
       cd $dir >/dev/null
       full_command="${command//%s/$line}"
@@ -39,12 +39,16 @@ Commands_from_file()
     done
     if [ "$success" = false ]; then
       if [[ $force != "n" ]]; then
+        echo -ne $OVERWRITE
         UI "!!$Command $full_command"
         return 1
       else
+        echo -ne $OVERWRITE
         UI "!Failed to Execute '$Command $full_command'"
       fi
 
     fi
   done < "$file_path"
+  echo -ne $OVERWRITE
+
 }
