@@ -1,18 +1,23 @@
 Mount(){
-
   local image=$1
   local mount_dir=$2
 
-  UI "Mounting: $(basename "$image" | cut -d '.' -f 1)"
+  if Is_Extracted "$mount_dir" ; then
+    return 0
+  fi
 
+  if [[ ! "$image" =~ \.img$ ]]; then
+    UI "!!Mount: $image_path must be a .img"
+    exit 1
+  fi
+
+
+  UI "Mounting: $(basename "$image" | cut -d '.' -f 1)"
   if mountpoint -q "$mount_dir"; then
       UI "f"
       UI "!$(basename "$image" | cut -d '.' -f 1) is already mounted."
-
-      UI "Unmounting: $(basename "$image" | cut -d '.' -f 1)"
-       sudo umount $mount_dir 
-       rm -rf $mount_dir 
-      UI "d"
+      Unmount $mount_dir
+      rm -rf $mount_dir
       UI "Mounting: $(basename "$image" | cut -d '.' -f 1)"
   fi
 

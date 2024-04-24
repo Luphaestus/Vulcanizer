@@ -10,28 +10,36 @@ Get_Target()
     Target_Mount=()
   fi
   UI "----" "\n"
+
+  if [ -f "$STOCK_DIR/$image_name/Target/$TARGET.img" ]; then
+    imgsuffix=.img
+  fi
+
+
   if [[ $copymount == "y" ]]; then
-    rm -rf $WORKING_DIR/$image_name/Target/$TARGET.img
+    Unmount $WORKING_DIR/$image_name/Target/$TARGET$imgsuffix
+    rm -rf $WORKING_DIR/$image_name/Target/$TARGET$imgsuffix
     UI "Copying: $TARGET $image_name"
     mkdir -p $WORKING_DIR/$image_name/Target/
-    sudo cp -a $STOCK_DIR/$image_name/Target/$TARGET.img $WORKING_DIR/$image_name/Target/
+    sudo cp -a $STOCK_DIR/$image_name/Target/$TARGET$imgsuffix $WORKING_DIR/$image_name/Target/
     UI "d"
   fi
-  if [[ $mount == "y" ]]; then
+
+  if [[ $mount == "y" && $imgsuffix==".img" ]]; then
     if [[ $copymount == "y" ]]; then
       mkdir -p $WORKING_DIR/$image_name/Target/$TARGET
       Mount $WORKING_DIR/$image_name/Target/$TARGET.img $WORKING_DIR/$image_name/Target/$TARGET
     fi
     Target_Mount=$WORKING_DIR/$image_name/Target/$TARGET
   fi
-  Target_Path=$WORKING_DIR/$image_name/Target/$TARGET.img
+  Target_Path=$WORKING_DIR/$image_name/Target/$TARGET$imgsuffix
 }
 
 Unmount_Target()
 {
   local image_name=$1
 
-  Unmount $WORKING_DIR/$image_name/Target/$TARGET.img $WORKING_DIR/$image_name/Target/$TARGET
+  Unmount $WORKING_DIR/$image_name/Target/$TARGET $WORKING_DIR/$image_name/Target/$TARGET.img
 }
 
 
@@ -42,29 +50,35 @@ Get_Source()
   local reset=$3
   local copymount=$4
 
+
+
   if [[ $reset != "n" ]]; then
     Source_Path=()
     Source_Mount=()
   fi
 
   for model in "${MODEL[@]}"; do
+    if [ -f  "$STOCK_DIR/$image_name/Source/$model.img"  ]; then
+      imgsuffix=.img
+    fi
     UI "----" "\n"
     if [[ $copymount == "y" ]]; then
-      rm -rf $WORKING_DIR/$image_name/Source/$model/$model.img
+      Unmount $WORKING_DIR/$image_name/Source/$model/$model$imgsuffix
+      rm -rf $WORKING_DIR/$image_name/Source/$model/$model$imgsuffix
       UI "Copying: $model $image_name"
       mkdir -p $WORKING_DIR/$image_name/Source/$model/
-      cp -a $STOCK_DIR/$image_name/Source/$model.img $WORKING_DIR/$image_name/Source/$model/
+      cp -a $STOCK_DIR/$image_name/Source/$model$imgsuffix $WORKING_DIR/$image_name/Source/$model/
       UI "d"
     fi
 
-    if [[ $mount == "y" ]]; then
+    if [[ $mount == "y" && $imgsuffix==".img" ]]; then
       if [[ $copymount == "y" ]]; then
         mkdir -p $WORKING_DIR/$image_name/Source/$model
         Mount $WORKING_DIR/$image_name/Source/$model/$model.img $WORKING_DIR/$image_name/Source/$model/$model
       fi
       Source_Mount+=($WORKING_DIR/$image_name/Source/$model/$model)
     fi
-    Source_Path+=($WORKING_DIR/$image_name/Source/$model/$model.img)
+    Source_Path+=($WORKING_DIR/$image_name/Source/$model/$model$imgsuffix)
   done
 }
 
@@ -72,6 +86,6 @@ Unmount_Source()
 {
   local image_name=$1
   for model in "${MODEL[@]}"; do
-    Unmount $WORKING_DIR/$image_name/Source/$model/$model.img $WORKING_DIR/$image_name/Source/$model/$model
+    Unmount $WORKING_DIR/$image_name/Source/$model/$model $WORKING_DIR/$image_name/Source/$model/$model.img
   done
 }

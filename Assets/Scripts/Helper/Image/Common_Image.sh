@@ -5,13 +5,20 @@ Common_Image()
   commonmount=$1
   imgpath=$2
   imgname=$3
-  mkdir -p $commonmount
-  sudo umount $imgpath
-  rm -rf $commonmount.img
-  sudo cp -a $imgpath $commonmount.img
-  Mount $imgpath "${MOUNTED_COMMON_IMAGES[0]}"
-
-  Mount $commonmount.img $commonmount
+  if [[ "$imgpath" =~ \.img$ ]]; then
+    rm -rf $commonmount.img
+    Unmount $commonmount
+    mkdir -p $commonmount
+    Unmount "${MOUNTED_COMMON_IMAGES[0]}"
+    sudo cp -a $imgpath $commonmount.img
+    Mount $imgpath "${MOUNTED_COMMON_IMAGES[0]}"
+    Mount $commonmount.img $commonmount
+  else
+    echo $imgpath
+    rm -rf $commonmount
+    mkdir -p $commonmount
+    cp -a $imgpath/* $commonmount
+  fi
 
   for ((index = 1; index < ${#MOUNTED_COMMON_IMAGES[@]}; index++)); do
       mountedimg="${MOUNTED_COMMON_IMAGES[$index]}"
@@ -79,6 +86,5 @@ Common_Image()
   echo -e $OVERWRITE$SUCCESS_FG"Successfully created common vendor!$RESET"
   echo --
   echo " "
-  Unmount $commonmount.img $commonmount
 
 }
