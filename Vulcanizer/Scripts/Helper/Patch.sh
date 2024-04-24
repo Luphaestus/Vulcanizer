@@ -42,9 +42,6 @@ Commands_from_file()
         echo -ne $OVERWRITE
         UI "!!$Command $full_command"
         return 1
-      else
-        echo -ne $OVERWRITE
-        UI "!Failed to Execute '$Command $full_command'"
       fi
 
     fi
