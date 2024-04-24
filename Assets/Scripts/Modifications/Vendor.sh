@@ -12,7 +12,7 @@ deleteTag()
 Build_Exynos_Vendor()
 {
   ####### Testing vars #######
-  local copymount_vendor="y"
+  local copymount_vendor="n"
 
   if [[ $CREATE_VENDOR != "y" ]]; then
     return 0
@@ -33,7 +33,7 @@ Build_Exynos_Vendor()
   if [[ $PATCH_VENDOR == "y" ]]; then
     UI "t|Patching Vendor(s)"
 
-    Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_DELETE "rm -r %s"
+    #Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_DELETE "rm -r %s"
     Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_COPY "sudo rm -r %s" "n"
 
     Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_COPY "sudo cp -a $Target_Mount/%s %s"
@@ -44,10 +44,14 @@ Build_Exynos_Vendor()
     UI "t|Creating Common Vendors"
     MOUNTED_COMMON_IMAGES=("${Source_Mount[@]}")
     Common_Image "$WORKING_DIR/Vendor/Shared/CommomVendor" ${Source_Path[0]}
+    if [[ $EROFS == "y" ]]; then
+      Convert2Erofs $commonmount.img /
+    fi
+    Unmount $commonmount $commonmount.img
   fi
 
-  Unmount_Target "Vendor"
-  Unmount_Source "Vendor"
+ # Unmount_Target "Vendor"
+#  Unmount_Source "Vendor"
 
 }
 

@@ -1,58 +1,58 @@
 process_file() {
     local file="$1"
-    echo $file
+    echo -ne "$OVERWRITE$file"
     local text=$(ls -dZ "$file")
     local selabel=$(echo "$text" | cut -d " " -f1)
 
     if [ "$file" = "." ]; then
-
-      if [ "$img" = "system" ]; then
-          sudo echo "/ $selabel" >> "$contexts"
-      else
-          sudo echo "/$img $selabel" >> "$contexts"
-      fi
-      sudo stat -c "/ %u %g %a" "$file" >> "$config"
+        sudo echo "/$mountpoint $selabel" >> "$contexts"
+        sudo stat -c "/ %u %g %a" "$file" >> "$config"
     else
-      if [ "$img" = "system" ]; then
-          sudo echo "/$file $selabel" >> "$contexts"
-          sudo stat -c "%n %u %g %a" "$file" >> "$config"
+      if [[ $mountpoint == "/" ]]; then
+        local contextmount=""
       else
-          sudo echo "/$img/$file $selabel" >> "$contexts"
-          sudo stat -c "$img/%n %u %g %a" "$file" >> "$config"
+        contextmount="/"
       fi
+      sudo echo "$contextmount$mountpoint$file $selabel" >> "$contexts"
+      sudo stat -c "$mountpoint%n %u %g %a" "$file" >> "$config"
     fi
     unset file text selabel permissions user_id group_id
 }
 
-img="system"
-TMP="../TMP"
-mkdir -p $TMP
-config="$TMP/${img}_config.txt"
-contexts="$TMP/${img}_contexts.txt"
+Convert2Erofs() {
+  local img_path=$1
+  mountpoint=$2
 
-echo "Creating $img filesystem, $config, and $contexts"
+  local img_mount="${img_path%.img}"
+  local img_name=$(basename "$img_mount")
+  if ! mountpoint -q "$img_mount"; then
+    Mount "$img_path" "$img_mount"
+  fi
+  cd $img_mount
 
-touch  "$config"
-> "$config"
-touch  "$contexts"
-> $contexts
+  TMP="../EroFS"
+  mkdir -p $TMP
+  config="$TMP/${img_name}_config.txt"
+  contexts="$TMP/${img_name}_contexts.txt"
 
-process_file "."
-sudo  find * | while read file;do process_file "$file"; done
+  UI "t|Converting: $img_name to EROFS" "\n"
 
-sed -i "s/\x0//g" "$contexts" \
-  && sed -i 's/\./\\./g' "$contexts" \
-  && sed -i 's/\+/\\+/g' "$contexts" \
-  && sed -i 's/\[/\\[/g' "$contexts"
+  touch  "$config"
+  > "$config"
+  touch  "$contexts"
+  > $contexts
+
+  process_file "."
+  UI "Compiling permissions"
+  sudo  find * | while read file;do process_file "$file"; done
+  echo -e $OVERWIRTE$SUCCESS_FG"Successfully compiled permissions!$RESET"
+
+  sed -i "s/\x0//g" "$contexts" \
+    && sed -i 's/\./\\./g' "$contexts" \
+    && sed -i 's/\+/\\+/g' "$contexts" \
+    && sed -i 's/\[/\\[/g' "$contexts"
 
 
-MY_DIR=$(pwd);
-if [ "$img" = "system" ]; then
-  mountpoint="/"
-else
-  mountpoint="/$img"
-fi
-
-sudo ../mkfs.erofs -z lz4hc,9 -b 4096 -T 1230735600 --fs-config-file $config --file-contexts $contexts --mount-point=$mountpoint "$TMP/$img.erofs" "."
-
-
+  sudo $EXTERNAL_DIR/mkfs.erofs -b 4096 -T 1230735600 --fs-config-file $config --file-contexts $contexts --mount-point=$mountpoint "../$img_name.erofs" "."
+  cd - >/dev/null
+}
