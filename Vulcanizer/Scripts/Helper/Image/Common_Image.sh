@@ -23,7 +23,7 @@ Common_Image()
       mountedimg="${MOUNTED_COMMON_IMAGES[$index]}"
       UI "diff: $mountedimg $commonmount"
       echo " "
-      INDENT= $INDENT_ALT
+      INDENT=$INDENT_ALT
       diff_output=$(sudo diff -rq "$mountedimg" "$commonmount" 2>/dev/null| grep differ | awk '{print $2}')
       if [[ ! -z "${diff_output// }" ]]; then
         while IFS= read -r line; do
