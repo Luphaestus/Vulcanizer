@@ -33,11 +33,12 @@ Build_Exynos_Vendor()
   if [[ $PATCH_VENDOR == "y" ]]; then
     echo " "
     UI "h|Patching Vendor(s)"
-
+    UI Running Delete Patches
     Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_DELETE "rm -r %s"
+    UI Running Copy Patches
     Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_COPY "sudo rm -r %s" "n"
-
     Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_COPY "sudo cp -a $Target_Mount/%s %s"
+    UI Running Misc Pathes
     Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_MISC "%s"
   fi
 
