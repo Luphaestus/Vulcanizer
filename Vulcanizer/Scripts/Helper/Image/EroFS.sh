@@ -53,6 +53,6 @@ Convert2Erofs() {
     && sed -i 's/\[/\\[/g' "$contexts"
 
 
-  sudo $EXTERNAL_DIR/mkfs.erofs -b 4096 -T 1230735600 --fs-config-file $config --file-contexts $contexts --mount-point=$mountpoint "../$img_name.erofs" "."
+  sudo $EXTERNAL_DIR/mkfs/mkfs.erofs -b 4096 -T 1230735600 --fs-config-file $config --file-contexts $contexts --mount-point=$mountpoint "../$img_name.erofs" "."
   cd - >/dev/null
 }
