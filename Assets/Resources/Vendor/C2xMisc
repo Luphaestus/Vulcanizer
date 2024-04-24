@@ -1,2 +1,0 @@
-#find . -depth -type f -name "*uwb*" -exec rm -f {} +
-
