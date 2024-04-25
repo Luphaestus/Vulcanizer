@@ -6,14 +6,15 @@ Unmount_All() {
     return 1
   fi
 
-  while IFS= read -r -d '' dir; do
-    sudo umount "$dir"
-    if [ $? -eq 0 ]; then
-      echo "Successfully unmounted: $dir"
-    else
-      echo "Failed to unmount: $dir"
+  mount_points=$(lsblk -o NAME,MOUNTPOINTS | awk '$2 != "" {print $2}')
+  
+  for mount_point in $mount_points; do
+    if [[ $mount_point == $target_dir* ]]; then
+      echo -ne $OVERWRITE"Unmounting $mount_point"
+      umount $mount_point
     fi
-  done < <(find "$target_dir" -type d -print0 | sort -r)
+  done
+  echo  -e "$OVERWRITE" 
 }
 
 Unmount() {
