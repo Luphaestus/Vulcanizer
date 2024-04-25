@@ -42,9 +42,11 @@ Build_Exynos_Vendor()
   local TestImagesChecksum=$STOCK_DIR/Vendor/TestCheksumImages.txt
   local SaveChecksumImages=$STOCK_DIR/Vendor/CheksumImages.txt
   Vendor_Cheksum $TestImagesChecksum $TestVendorConfig
-  
   if ! ( [[ "$FORCE_VENDOR" == "y" ]] || Compare_Cheksum "$TestImagesChecksum" "$SaveChecksumImages" ); then
     UI "h|Retrieving Stock Vendors"
+    
+    Unmount_All "$WORKING_DIR/Vendor/"
+    rm -rf "$WORKING_DIR/Vendor/"
     
     ##test var##
     copyVendor="y"
@@ -92,7 +94,14 @@ Build_Exynos_Vendor()
   else
     UI "Vendor already compiled"
   fi
+  
+  Get_Target "Vendor" "y" "Y" "n"
+  Get_Source "Vendor" "y" "y" "n"
 
+  for mount in "${Source_Mount[@]}"; do   
+    model=$(basename "$path")
+    cp -a $mount-specific/* $SPECIFIC_FILES/$model/
+  done
 }
 
   COMMON_COMMANDS+=("Build_Exynos_Vendor")
