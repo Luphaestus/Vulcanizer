@@ -9,57 +9,49 @@ deleteTag()
     echo "manifest.xml : $start - $firsttotal"
 }
 
+
+
 Vendor_Cheksum()
 {
-  location=$1
+  images=$1
   UI "Making Vendor Checksums"
-  > "$location"
-  chown "${SUDO_USER:-$(whoami)}" "$location"
-  Checksum_Target $location Vendor 2>/dev/null
-  Checksum_Source $location Vendor  2>/dev/null
-  md5sum "$(realpath "$BASH_SOURCE")" >> $location
-  md5sum $RESOURCES_DIR/Vendor/* >> $location
-  echo "Patch Vendor: "$PATCH_VENDOR >> $location
-  echo "Common Image: "$COMMON_VENDOR >> $location
+  > "$images"
+  chown "${SUDO_USER:-$(whoami)}" "$images"
+  
+  Checksum_Target Vendor $images 2>/dev/null
+  Checksum_Source Vendor $images 2>/dev/null
+  md5sum "$(realpath "$BASH_SOURCE")" >> $images
+  echo "Patch Vendor: "$PATCH_VENDOR >> $images
+  echo "Common Image: "$COMMON_VENDOR >> $images
+  md5sum $RESOURCES_DIR/Vendor/* >> $images
+  
+  
+
   UI "d"
 }
 
 
 Build_Exynos_Vendor()
 {
-
-
-  ####### Testing vars #######
-  local copymount_vendor="y"
-
   if [[ $CREATE_VENDOR != "y" ]]; then
     return 0
   fi
 
-
   UI "t|Building Vendor"
   
-  local TestCheksum=$STOCK_DIR/Vendor/TestCheksum.txt
-  local SaveChecksum=$STOCK_DIR/Vendor/Cheksum.txt
-  Vendor_Cheksum $TestCheksum
+  local TestImagesChecksum=$STOCK_DIR/Vendor/TestCheksumImages.txt
+  local SaveChecksumImages=$STOCK_DIR/Vendor/CheksumImages.txt
+  Vendor_Cheksum $TestImagesChecksum $TestVendorConfig
   
-  old_checksum=""
-  if [ -f "$SaveChecksum" ]; then
-      old_checksum=$(md5sum "$SaveChecksum" | awk '{print $1}')
-  fi
-  
-  new_checksum=""
-  if [ -f "$TestCheksum" ]; then
-      new_checksum=$(md5sum "$TestCheksum" | awk '{print $1}')
-  fi
-
-  if ! [[ "$FORCE_VENDOR" == "y" || \
-        (-f "$SaveChecksum" && \
-         "$old_checksum" == "$new_checksum") ]]; then
-
+  if ! ( [[ "$FORCE_VENDOR" == "y" ]] || Compare_Cheksum "$TestImagesChecksum" "$SaveChecksumImages" ); then
     UI "h|Retrieving Stock Vendors"
-    Get_Target "Vendor" "y" "Y" $copymount_vendor
-    Get_Source "Vendor" "y" "y" $copymount_vendor
+    
+    ##test var##
+    copyVendor="y"
+    
+    Get_Target "Vendor" "y" "Y" $copyVendor
+    Get_Source "Vendor" "y" "y" $copyVendor
+
   
     PATCH_DIRS=("${Source_Mount[@]}")
     PATCH_MODEL=()  
@@ -96,9 +88,9 @@ Build_Exynos_Vendor()
     UI "h|Cleaning Up"
     Unmount_Target "Vendor"
     Unmount_Source "Vendor"
-    mv "$TestCheksum" "$SaveChecksum"
+    mv "$TestImagesChecksum" "$SaveChecksumImages"
   else
-    echo "files identical "
+    UI "Vendor already compiled"
   fi
 
 }
