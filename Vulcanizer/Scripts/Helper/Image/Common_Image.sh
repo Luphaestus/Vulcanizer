@@ -5,6 +5,7 @@ Common_Image()
   commonmount=$1
   imgpath=$2
   imgname=$3
+  erofsSymlinks=()
   if [[ "$imgpath" =~ \.img$ ]]; then
     rm -rf $commonmount.img
     Unmount $commonmount
@@ -28,8 +29,10 @@ Common_Image()
       if [[ ! -z "${diff_output// }" ]]; then
         while IFS= read -r line; do
           trimmed_string="${line#${MOUNTED_COMMON_IMAGES[$index]}/}"
-          echo -ne $OVERWRITE$INDENT$trimmed_string
+         # echo -ne $OVERWRITE$INDENT$trimmed_string
+         echo HELLO
           for ((i=$index; i>=0; i--)) do
+            echo $index
             img_mounted=${MOUNTED_COMMON_IMAGES[$i]}
             mkdir -p "$(dirname "$img_mounted-specific/$trimmed_string")"
             sudo cp -a "$img_mounted/$trimmed_string" "$img_mounted-specific/$trimmed_string"
@@ -37,7 +40,7 @@ Common_Image()
 
           rm "$commonmount/$trimmed_string"
           if [[ $EROFS == "y" ]]; then
-            ln -s /odm/$imgname/$trimmed_string $commonmount/$trimmed_string
+            erofsSymlinks+=("/odm/$imgname/$trimmed_string $commonmount/$trimmed_string")
           fi
 
         done <<< "$diff_output"
@@ -60,7 +63,7 @@ Common_Image()
             done
               rm -rf "$commonmount/$trimmed_string"
               if [[ $EROFS == "y" ]]; then
-                ln -s /odm/$imgname/$trimmed_string $commonmount/$trimmed_string
+                erofsSymlinks+=("/odm/$imgname/$trimmed_string $commonmount/$trimmed_string")
               fi
           else
             img_mounted=${MOUNTED_COMMON_IMAGES[$index]}
@@ -70,7 +73,7 @@ Common_Image()
             mkdir -p  "$(dirname "$img_mounted-specific/$trimmed_string")"
             cp -a "$img_mounted/$trimmed_string" "$img_mounted-specific/$trimmed_string"
             if [[ $EROFS == "y" ]]; then
-              ln -s /odm/$imgname/$trimmed_string $commonmount/$trimmed_string
+              erofsSymlinks+=("/odm/$imgname/$trimmed_string $commonmount/$trimmed_string")
             fi
           fi
           done <<< "$diff_output"
@@ -80,5 +83,18 @@ Common_Image()
     echo -e $OVERWRITE$SUCCESS_FG$INDENT"Successfully resolved unique files$RESET"
     INDENT=""
   done
+  
+  
+  if [[ $EROFS == "y" ]]; then
+    UI "h|Creating Symlinks"
+    for symlink in "${erofsSymlinks[@]}"; do
+      src=$(echo "$symlink" | awk '{print $1}')  
+      dest=$(echo "$symlink" | awk '{print $2}') 
+    
+      echo -ne $OVERWRITE"Creating symbolic link from $src to $dest"
+      ln -s "$src" "$dest"
+    done
+    echo -e $OVERWRITE$SUCCESS_FG"Successfully made Symlinks$RESET"
+  fi  
   echo " "
 }
