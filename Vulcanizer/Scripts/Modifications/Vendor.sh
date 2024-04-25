@@ -17,6 +17,7 @@ Vendor_Cheksum()
   chown "${SUDO_USER:-$(whoami)}" "$location"
   Checksum_Target $location Vendor 2>/dev/null
   Checksum_Source $location Vendor  2>/dev/null
+  md5sum "$(realpath "$BASH_SOURCE")" >> $location
   md5sum $RESOURCES_DIR/Vendor/* >> $location
   echo "Patch Vendor: "$PATCH_VENDOR >> $location
   echo "Common Image: "$COMMON_VENDOR >> $location
@@ -26,6 +27,8 @@ Vendor_Cheksum()
 
 Build_Exynos_Vendor()
 {
+
+
   ####### Testing vars #######
   local copymount_vendor="y"
 
@@ -53,7 +56,6 @@ Build_Exynos_Vendor()
   if ! [[ "$FORCE_VENDOR" == "y" || \
         (-f "$SaveChecksum" && \
          "$old_checksum" == "$new_checksum") ]]; then
-    mv "$TestCheksum" "$SaveChecksum"
 
     UI "h|Retrieving Stock Vendors"
     Get_Target "Vendor" "y" "Y" $copymount_vendor
@@ -94,6 +96,7 @@ Build_Exynos_Vendor()
     UI "h|Cleaning Up"
     Unmount_Target "Vendor"
     Unmount_Source "Vendor"
+    mv "$TestCheksum" "$SaveChecksum"
   else
     echo "files identical "
   fi
