@@ -25,14 +25,12 @@ Common_Image()
       UI "diff: $mountedimg $commonmount"
       echo " "
       INDENT=$INDENT_ALT
-      diff_output=$(sudo diff -rq "$mountedimg" "$commonmount" 2>/dev/null| grep differ | awk '{print $2}')
+      diff_output=$(sudo diff -rq "$mountedimg" "$commonmount" | grep differ | awk '{print $2}')
       if [[ ! -z "${diff_output// }" ]]; then
         while IFS= read -r line; do
           trimmed_string="${line#${MOUNTED_COMMON_IMAGES[$index]}/}"
          # echo -ne $OVERWRITE$INDENT$trimmed_string
-         echo HELLO
           for ((i=$index; i>=0; i--)) do
-            echo $index
             img_mounted=${MOUNTED_COMMON_IMAGES[$i]}
             mkdir -p "$(dirname "$img_mounted-specific/$trimmed_string")"
             sudo cp -a "$img_mounted/$trimmed_string" "$img_mounted-specific/$trimmed_string"
@@ -48,7 +46,7 @@ Common_Image()
           UI "!No differing files found."
       fi
       echo -e $OVERWRITE$SUCCESS_FG$INDENT"Successfully resolved differing files$RESET"
-      diff_output=$(diff -rq "$mountedimg" "$commonmount" 2>/dev/null | grep "Only in"  | awk '{gsub(/:/,"/",$3); gsub(/:/,"/",$4); print $3, $4}'| tr -d ' ')
+      diff_output=$(diff -rq "$mountedimg" "$commonmount"  | grep "Only in"  | awk '{gsub(/:/,"/",$3); gsub(/:/,"/",$4); print $3, $4}'| tr -d ' ')
       if [[ ! -z "${diff_output// }" ]]; then
         while IFS= read -r line; do
           if echo "$line" | grep -q "$commonmount"; then
@@ -73,6 +71,7 @@ Common_Image()
             mkdir -p  "$(dirname "$img_mounted-specific/$trimmed_string")"
             cp -a "$img_mounted/$trimmed_string" "$img_mounted-specific/$trimmed_string"
             if [[ $EROFS == "y" ]]; then
+              echo $commonmount/$trimmed_string
               erofsSymlinks+=("/odm/$imgname/$trimmed_string $commonmount/$trimmed_string")
             fi
           fi
@@ -91,8 +90,9 @@ Common_Image()
       src=$(echo "$symlink" | awk '{print $1}')  
       dest=$(echo "$symlink" | awk '{print $2}') 
     
-      echo -ne $OVERWRITE"Creating symbolic link from $src to $dest"
-      ln -s "$src" "$dest"
+      if [ ! -L "$dest" ]; then
+        ln -s "$src" "$dest"
+      fi 
     done
     echo -e $OVERWRITE$SUCCESS_FG"Successfully made Symlinks$RESET"
   fi  
