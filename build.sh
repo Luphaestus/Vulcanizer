@@ -22,6 +22,9 @@ if [ "$EUID" -ne 0 ]; then
   exec sudo "$0" "$@"
 fi
 
+rm -rf $SPECIFIC_FILES
+mkdir -p $SPECIFIC_FILES
+
 UI "t|Loading Scripts"
 for script in $(find $ASSETS_DIR -type f -name "*.sh"); do
   UI "Loading: $(basename "$script")"
