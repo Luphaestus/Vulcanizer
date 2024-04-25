@@ -102,6 +102,8 @@ Build_Exynos_Vendor()
   Get_Target "Vendor" "y" "Y" "n"
   Get_Source "Vendor" "y" "y" "n"
   
+  Out_images=()
+  
   if [[ $COMMON_VENDOR == "y" ]]; then
     for mount in "${Source_Mount[@]}"; do   
       if [[ $EROFS == "y" ]]; then
@@ -113,7 +115,23 @@ Build_Exynos_Vendor()
       mkdir -p $dest
       cp -a $mount-specific/* $dest
     done
+    if [[ $EROFS == "y" ]]; then
+      Out_images+=("$WORKING_DIR/Vendor/Shared/CommomVendor.erofs")
+    else
+      if [[ "${Source_Path[0]}" == *.img ]]; then
+        Out_images+=("$WORKING_DIR/Vendor/Shared/CommomVendor.img")
+      else
+        Out_images+=("$WORKING_DIR/Vendor/Shared/CommomVendor")
+      fi      
+    fi
+  else
+    for path in "${Source_Path[@]}"; do   
+      Out_images+=("$path")    
+    done
   fi
+  for image in "${Out_images[@]}"; do
+    echo "$image"
+  done
 }
 
 COMMON_COMMANDS+=("Build_Exynos_Vendor")
