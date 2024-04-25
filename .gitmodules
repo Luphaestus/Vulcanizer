@@ -1,3 +1,3 @@
-[submodule "external/exynos_kernel"]
+[submodule "External/exynos_kernel"]
 	path = External/exynos_kernel
 	url = https://github.com/ExtremeXT/android_kernel_samsung_exynos990.git
