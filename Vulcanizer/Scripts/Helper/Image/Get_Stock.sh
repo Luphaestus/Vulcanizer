@@ -45,6 +45,17 @@ Unmount_Target()
   Unmount $WORKING_DIR/$image_name/Target/$TARGET $WORKING_DIR/$image_name/Target/$TARGET.img
 }
 
+Checksum_Target()
+{
+  location=$1
+  image_name=$2
+  
+  if [ -f "$STOCK_DIR/$image_name/Target/$TARGET.img" ]; then
+    md5sum $STOCK_DIR/$image_name/Target/$TARGET.img >> $location
+  else
+    tar c  $STOCK_DIR/$image_name/Target/$TARGET | md5sum >> $location
+  fi
+}
 
 Get_Source()
 {
@@ -96,5 +107,19 @@ Unmount_Source()
   local image_name=$1
   for model in "${MODEL[@]}"; do
     Unmount $WORKING_DIR/$image_name/Source/$model/$model $WORKING_DIR/$image_name/Source/$model/$model.img
+  done
+}
+
+Checksum_Source()
+{
+  location=$1
+  image_name=$2
+  
+  for model in "${MODEL[@]}"; do
+    if [ -f  "$STOCK_DIR/$image_name/Source/$model.img"  ]; then
+      md5sum $STOCK_DIR/$image_name/Source/$model.img >> $location
+    else 
+      tar c  $STOCK_DIR/$image_name/Source/$model | md5sum >> $location
+    fi
   done
 }
