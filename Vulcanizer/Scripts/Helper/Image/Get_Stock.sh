@@ -26,9 +26,11 @@ Get_Target()
   fi
 
   if [[ $mount == "y" && $imgsuffix == ".img" ]]; then
+    if [[ $copymount == "y" ]]; then
       mkdir -p $WORKING_DIR/$image_name/Target/$TARGET
       Mount $WORKING_DIR/$image_name/Target/$TARGET.img $WORKING_DIR/$image_name/Target/$TARGET
-      Target_Mount=$WORKING_DIR/$image_name/Target/$TARGET
+    fi 
+    Target_Mount=$WORKING_DIR/$image_name/Target/$TARGET
   elif [[ $imgsuffix != ".img" ]]; then
     Target_Mount=$WORKING_DIR/$image_name/Target/$TARGET
   fi
@@ -89,9 +91,11 @@ Get_Source()
     fi
 
     if [[ $mount == "y" && $imgsuffix == ".img" ]]; then
+      if [[ $copymount == "y" ]]; then
         mkdir -p $WORKING_DIR/$image_name/Source/$model
         Mount $WORKING_DIR/$image_name/Source/$model/$model.img $WORKING_DIR/$image_name/Source/$model/$model
-        Source_Mount+=($WORKING_DIR/$image_name/Source/$model/$model)
+      fi
+      Source_Mount+=($WORKING_DIR/$image_name/Source/$model/$model)
     elif [[ $imgsuffix != ".img" ]]; then
       Source_Mount+=($WORKING_DIR/$image_name/Source/$model/$model)
     fi
