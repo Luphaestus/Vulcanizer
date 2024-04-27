@@ -56,3 +56,41 @@ Convert2Erofs() {
   sudo $EXTERNAL_DIR/mkfs/mkfs.erofs -b 4096 -T 1230735600 --fs-config-file $config --file-contexts $contexts --mount-point=$mountpoint "../$img_name.erofs" "."
   cd - >/dev/null
 }
+
+Convert2Ext4Fs() {
+
+  local img_path="$1"
+  local source_dir="$2"
+
+  if [ ! -d "$source_dir" ]; then
+    echo "Error: Source directory does not exist or is not a directory: $source_dir"
+    return 1
+  fi
+
+  local total_size
+  total_size=$(du -sh "$source_dir" | cut -f1)
+
+  local image_size
+  image_size=$(numfmt --from=iec "$total_size")
+  image_size=$((image_size + (image_size / 10)))
+
+  dd if=/dev/zero of="$img_path" bs=1 count=0 seek="$image_size" status=none
+  mkfs.ext4 -Fq "$img_path"  >/dev/null
+
+  local mount_point="/mnt/temp_mount"
+  mkdir -p "$mount_point"
+  sudo mount -o loop "$img_path" "$mount_point"
+  sudo cp -a "$source_dir/." "$mount_point/"
+  sudo umount "$mount_point"
+  rmdir "$mount_point"
+}
+
+Convert2img ()
+{
+  local source_dir="$1"
+  if [[ $EROFS == "y" ]]; then
+    Convert2Erofs $source_dir.erofs $source_dir
+  elif [[ -f $source_dir.img ]]; then
+    Folder_To_Ext4Fs $source_dir.img $source_dir
+  fi
+}

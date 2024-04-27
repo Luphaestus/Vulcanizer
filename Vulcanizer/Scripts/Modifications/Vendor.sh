@@ -84,11 +84,13 @@ Build_Exynos_Vendor()
         UI "h|Creating Common Vendors"
         MOUNTED_COMMON_IMAGES=("${Source_Mount[@]}")
         Common_Image "$WORKING_DIR/Vendor/Shared/CommomVendor" ${Source_Path[0]} Vendor
-        if [[ $EROFS == "y" ]]; then
-          Convert2Erofs $commonmount.img /
-        fi
-        Unmount $commonmount $commonmount.img
+        Convert2img $commonmount
+      else
+        for mount in "${Source_Mount[@]}"; do
+          Convert2img $mount
+        done
       fi
+
       echo " "
       UI "h|Cleaning Up"
       Unmount_Target "Vendor"
@@ -115,23 +117,30 @@ Build_Exynos_Vendor()
       mkdir -p $dest
       cp -a $mount-specific/* $dest
     done
-    if [[ $EROFS == "y" ]]; then
-      Out_images+=("$WORKING_DIR/Vendor/Shared/CommomVendor.erofs")
-    else
-      if [[ "${Source_Path[0]}" == *.img ]]; then
-        Out_images+=("$WORKING_DIR/Vendor/Shared/CommomVendor.img")
-      else
-        Out_images+=("$WORKING_DIR/Vendor/Shared/CommomVendor")
-      fi      
-    fi
+    
+   #if [[ $EROFS == "y" ]]; then
+   #  Out_images+=("$WORKING_DIR/Vendor/Shared/CommomVendor.erofs")
+   #else
+   #  if [[ "${Source_Path[0]}" == *.img ]]; then
+   #    Out_images+=("$WORKING_DIR/Vendor/Shared/CommomVendor.img")
+   #  else
+   #    Out_images+=("$WORKING_DIR/Vendor/Shared/CommomVendor")
+   #  fi      
+   #fi
   else
     for path in "${Source_Path[@]}"; do   
       Out_images+=("$path")    
     done
   fi
-  for image in "${Out_images[@]}"; do
-    echo "$image"
-  done
+  #for image in "${Out_images[@]}"; do
+  #  if [  -d "$image" ]; then
+  #    Folder_To_Ext4Fs $image $image.img
+  #    image=$image.img
+  #  fi
+  #  if [[ $EROFS == "y" ]]; then
+  #    echo "Create Erofs"
+  #  fi 
+  #done
 }
 
 COMMON_COMMANDS+=("Build_Exynos_Vendor")
