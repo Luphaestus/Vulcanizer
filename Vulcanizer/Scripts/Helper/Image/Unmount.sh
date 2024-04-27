@@ -2,8 +2,7 @@ Unmount_All() {
   local target_dir="$1"
 
   if [ ! -d "$target_dir" ]; then
-    echo "Error: Target directory '$target_dir' does not exist."
-    return 1
+    return 0
   fi
 
   mount_points=$(lsblk -o NAME,MOUNTPOINTS | awk '$2 != "" {print $2}')
@@ -14,7 +13,7 @@ Unmount_All() {
       umount $mount_point
     fi
   done
-  echo  -e "$OVERWRITE" 
+  echo  -ne "$OVERWRITE"
 }
 
 Unmount() {

@@ -20,14 +20,10 @@ process_file() {
 }
 
 Convert2Erofs() {
-  local img_path=$1
+  local img_mount=$1
   mountpoint=$2
 
-  local img_mount="${img_path%.img}"
   local img_name=$(basename "$img_mount")
-  if ! mountpoint -q "$img_mount"; then
-    Mount "$img_path" "$img_mount"
-  fi
   cd $img_mount
 
   TMP="../EroFS"
@@ -35,7 +31,7 @@ Convert2Erofs() {
   config="$TMP/${img_name}_config.txt"
   contexts="$TMP/${img_name}_contexts.txt"
 
-  UI "h|Converting: $img_name to EROFS" "\n"
+  UI "h|Converting $img_name to EROFS" "\n"
 
   touch  "$config"
   > "$config"
@@ -63,9 +59,11 @@ Convert2Ext4Fs() {
   local source_dir="$2"
 
   if [ ! -d "$source_dir" ]; then
-    echo "Error: Source directory does not exist or is not a directory: $source_dir"
-    return 1
+    return 0
   fi
+
+  UI "h|Converting $source_dir to EXT4" "\n"
+
 
   local total_size
   total_size=$(du -sh "$source_dir" | cut -f1)
@@ -74,23 +72,28 @@ Convert2Ext4Fs() {
   image_size=$(numfmt --from=iec "$total_size")
   image_size=$((image_size + (image_size / 10)))
 
+  UI "Creating: empty ext4"
   dd if=/dev/zero of="$img_path" bs=1 count=0 seek="$image_size" status=none
   mkfs.ext4 -Fq "$img_path"  >/dev/null
+  UI "d"
 
+  UI "Copying: files into ext4 image"
   local mount_point="/mnt/temp_mount"
   mkdir -p "$mount_point"
   sudo mount -o loop "$img_path" "$mount_point"
   sudo cp -a "$source_dir/." "$mount_point/"
   sudo umount "$mount_point"
   rmdir "$mount_point"
+  UI "d"
 }
 
 Convert2img ()
 {
   local source_dir="$1"
+  local mountpoint=$2
   if [[ $EROFS == "y" ]]; then
-    Convert2Erofs $source_dir.erofs $source_dir
-  elif [[ -f $source_dir.img ]]; then
-    Folder_To_Ext4Fs $source_dir.img $source_dir
+    Convert2Erofs $source_dir $mountpoint
+  elif [[ ! -f $source_dir.img ]]; then
+    Convert2Ext4Fs $source_dir.img $source_dir
   fi
 }

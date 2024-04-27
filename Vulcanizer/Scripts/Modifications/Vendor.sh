@@ -33,24 +33,22 @@ Vendor_Cheksum()
 
 Build_Exynos_Vendor()
 {
-  #test#
-  skipChecksum="y"
 
   if [[ $CREATE_VENDOR != "y" ]]; then
     return 0
   fi
   UI "t|Building Vendor"
 
-  if [[ $skipChecksum != "y" ]]; then    
+  if [[ $SKIPVENDORCHECKSUM != "y" ]]; then
     local TestImagesChecksum=$STOCK_DIR/Vendor/TestCheksumImages.txt
     local SaveChecksumImages=$STOCK_DIR/Vendor/CheksumImages.txt
     Vendor_Cheksum $TestImagesChecksum $TestVendorConfig
     if ! ( [[ "$FORCE_VENDOR" == "y" ]] || Compare_Cheksum "$TestImagesChecksum" "$SaveChecksumImages" ); then
+      echo " "
       UI "h|Retrieving Stock Vendors"
-      
       Unmount_All "$WORKING_DIR/Vendor/"
       rm -rf "$WORKING_DIR/Vendor/"
-      
+      mkdir -p "$WORKING_DIR/Vendor/"
       ##test var##
       copyVendor="y"
       
@@ -63,9 +61,8 @@ Build_Exynos_Vendor()
       for dir in "${Patch_Dirs[@]}"; do
         PATCH_MODEL+=($(basename "$dir"))
       done
-    
+      echo " "
       if [[ $PATCH_VENDOR == "y" ]]; then
-        echo " "
         UI "h|Patching Vendor(s)"
         UI Running Delete Patches
         echo " "
@@ -77,21 +74,21 @@ Build_Exynos_Vendor()
         UI Running Misc Pathes
         echo " "
         Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_MISC "%s"
-      fi
-    
-      if [[ $COMMON_VENDOR == "y" ]]; then
         echo " "
+        echo " "
+      fi
+
+      if [[ $COMMON_VENDOR == "y" ]]; then
         UI "h|Creating Common Vendors"
         MOUNTED_COMMON_IMAGES=("${Source_Mount[@]}")
         Common_Image "$WORKING_DIR/Vendor/Shared/CommomVendor" ${Source_Path[0]} Vendor
-        Convert2img $commonmount
+        Convert2img $commonmount vendor/
       else
         for mount in "${Source_Mount[@]}"; do
-          Convert2img $mount
+          Convert2img $mount vendor/
         done
       fi
 
-      echo " "
       UI "h|Cleaning Up"
       Unmount_Target "Vendor"
       Unmount_Source "Vendor"
@@ -100,7 +97,8 @@ Build_Exynos_Vendor()
       UI "Vendor already compiled"
     fi
   fi
-  UI "h|Cleaning Up"
+  echo " "
+  UI "h|Moving build to output folder"
   Get_Target "Vendor" "y" "Y" "n"
   Get_Source "Vendor" "y" "y" "n"
   
