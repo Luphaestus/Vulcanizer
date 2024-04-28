@@ -20,8 +20,9 @@ process_file() {
 }
 
 Convert2Erofs() {
-  local img_mount=$1
-  mountpoint=$2
+  local img_path=$1
+  local img_mount=$2
+  mountpoint=$3
 
   local img_name=$(basename "$img_mount")
   cd $img_mount
@@ -49,8 +50,9 @@ Convert2Erofs() {
     && sed -i 's/\[/\\[/g' "$contexts"
 
 
-  sudo $EXTERNAL_DIR/mkfs/mkfs.erofs -b 4096 -T 1230735600 --fs-config-file $config --file-contexts $contexts --mount-point=$mountpoint "../$img_name.erofs" "."
+  sudo $EXTERNAL_DIR/mkfs/mkfs.erofs -b 4096 -T 1230735600 --fs-config-file $config --file-contexts $contexts --mount-point=$mountpoint "$img_path" "."
   cd - >/dev/null
+  echo " "
 }
 
 Convert2Ext4Fs() {
@@ -62,7 +64,8 @@ Convert2Ext4Fs() {
     return 0
   fi
 
-  UI "h|Converting $source_dir to EXT4" "\n"
+
+  UI "h|Converting $(basename "$source_dir") to EXT4" "\n"
 
 
   local total_size
@@ -85,15 +88,27 @@ Convert2Ext4Fs() {
   sudo umount "$mount_point"
   rmdir "$mount_point"
   UI "d"
+  echo " "
 }
 
 Convert2img ()
 {
   local source_dir="$1"
   local mountpoint=$2
+
+  outimg="${source_dir%/*}"/out/$(basename "$source_dir").img
+
+  mkdir -p "${source_dir%/*}"/out/
+
+
   if [[ $EROFS == "y" ]]; then
-    Convert2Erofs $source_dir $mountpoint
+    Convert2Erofs  $outimg $source_dir $mountpoint
   elif [[ ! -f $source_dir.img ]]; then
-    Convert2Ext4Fs $source_dir.img $source_dir
+    Convert2Ext4Fs $outimg $source_dir
+  else
+    if [[ $COMPRESS != "y" ]]; then
+      ln -s $source_dir.img $outimg
+    fi
   fi
+
 }

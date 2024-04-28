@@ -43,7 +43,7 @@ Build_Exynos_Vendor()
     local TestImagesChecksum=$STOCK_DIR/Vendor/TestCheksumImages.txt
     local SaveChecksumImages=$STOCK_DIR/Vendor/CheksumImages.txt
     Vendor_Cheksum $TestImagesChecksum $TestVendorConfig
-    if ! ( [[ "$FORCE_VENDOR" == "y" ]] || Compare_Cheksum "$TestImagesChecksum" "$SaveChecksumImages" ); then
+    if [[ "$FORCE_VENDOR" == "y" ]] || ! Compare_Cheksum "$TestImagesChecksum" "$SaveChecksumImages"; then
       echo " "
       UI "h|Retrieving Stock Vendors"
       Unmount_All "$WORKING_DIR/Vendor/"
@@ -75,7 +75,6 @@ Build_Exynos_Vendor()
         echo " "
         Commands_from_file $RESOURCES_DIR/Vendor/$VENDOR_MISC "%s"
         echo " "
-        echo " "
       fi
 
       if [[ $COMMON_VENDOR == "y" ]]; then
@@ -93,6 +92,17 @@ Build_Exynos_Vendor()
       Unmount_Target "Vendor"
       Unmount_Source "Vendor"
       mv "$TestImagesChecksum" "$SaveChecksumImages"
+
+      if [[ $COMPRESS == "y" ]]; then
+        if [[ $COMMON_VENDOR == "y" ]]; then
+          Common_Image "$WORKING_DIR/Vendor/Shared/CommomVendor"
+        else
+          for mount in "${Source_Mount[@]}"; do
+            Convert2img $mount vendor/
+          done
+        fi
+      fi
+
     else
       UI "Vendor already compiled"
     fi
