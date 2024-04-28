@@ -71,7 +71,6 @@ Common_Image()
             mkdir -p  "$(dirname "$img_mounted-specific/$trimmed_string")"
             cp -a "$img_mounted/$trimmed_string" "$img_mounted-specific/$trimmed_string"
             if [[ $EROFS == "y" ]]; then
-              echo $commonmount/$trimmed_string
               erofsSymlinks+=("/odm/$imgname/$trimmed_string $commonmount/$trimmed_string")
             fi
           fi
