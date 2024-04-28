@@ -6,7 +6,6 @@ EROFS="y"
 #Exnos
 EXYNOS_TARGET="p3s"
 EXYNOS_MODELS=("c1s" c2s c1slte c2slte)
-#EXYNOS_MODELS=(c2slte c2s)
 
 #Snapdragon
 SNAPDRAGON_TARGET="something"
@@ -15,8 +14,8 @@ SNAPDRAGON_MODELS=(c2s)
 #Vendor
 CREATE_VENDOR="y"
 COMMON_VENDOR="y"
-PATCH_VENDOR="n"
-FORCE_VENDOR="y"
+PATCH_VENDOR="y"
+FORCE_VENDOR="n"
 #test
 SKIPVENDORCHECKSUM="n"
 

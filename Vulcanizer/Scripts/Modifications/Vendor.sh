@@ -52,7 +52,7 @@ Build_Exynos_Vendor()
       ##test var##
       copyVendor="y"
 
-      if [[ copyVendor!="y" ]]; then
+      if [[ $copyVendor!="y" ]]; then
         Unmount_All "$WORKING_DIR/Vendor/"
         rm -rf "$WORKING_DIR/Vendor/"
         mkdir -p "$WORKING_DIR/Vendor/"
