@@ -50,15 +50,14 @@ Build_Exynos_Vendor()
       UI "h|Retrieving Stock Vendors"
 
       ##test var##
-      copyVendor="y"
 
-      if [[ $copyVendor!="y" ]]; then
+      if [[ $COPYVENDOR == "y" ]]; then
         Unmount_All "$WORKING_DIR/Vendor/"
         rm -rf "$WORKING_DIR/Vendor/"
         mkdir -p "$WORKING_DIR/Vendor/"
 
-        Get_Target "Vendor" "y" "Y" $copyVendor
-        Get_Source "Vendor" "y" "y" $copyVendor
+        Get_Target "Vendor" "y" "Y" $COPYVENDOR
+        Get_Source "Vendor" "y" "y" $COPYVENDOR
       fi
     
       PATCH_DIRS=("${Source_Mount[@]}")
@@ -97,10 +96,6 @@ Build_Exynos_Vendor()
       Unmount_Target "Vendor"
       Unmount_Source "Vendor"
 
-      if [[ $FORCE_VENDOR != "y" ]]; then
-        mv "$TestImagesChecksum" "$SaveChecksumImages"
-      fi
-
       if [[ $COMPRESS == "y" ]]; then
         if [[ $COMMON_VENDOR == "y" ]]; then
             Compress_Image "${commonmount%/*}"/out/$(basename "$commonmount").img
@@ -111,6 +106,10 @@ Build_Exynos_Vendor()
         fi
       fi
 
+      if [[ $FORCE_VENDOR != "y" ]]; then
+        mv "$TestImagesChecksum" "$SaveChecksumImages"
+      fi
+
     else
       UI "Vendor already compiled"
     fi
@@ -119,12 +118,31 @@ Build_Exynos_Vendor()
   UI "h|Moving build to output folder"
   Get_Target "Vendor" "y" "Y" "n"
   Get_Source "Vendor" "y" "y" "n"
-  
 
 
 
+  if [[ $COMMON_VENDOR != "y" ]]; then
+    for mount in "${Source_Mount[@]}"; do
+      UI "Copying: $(basename "$mount")"
+      if [[ $COMPRESS == "y" ]]; then
+        copypath="${mount%/*}"/out/compressed/*
+      else
+        copypath="${mount%/*}"/out/$(basename "$mount").img
+      fi
+      mkdir -p $OUT_DIR/$(basename "$mount")/Vendor/
+      cp -aL $copypath $OUT_DIR/$(basename "$mount")/Vendor/
+      UI "d"
+    done
+  else
+    if [[ $COMPRESS == "y" ]]; then
+      copypath=$WORKING_DIR/Vendor/Shared/out/compressed/*
+    else
+      copypath=$WORKING_DIR/Vendor/Shared/out/CommomVendor.img
+    fi
+    mkdir -p $OUT_DIR/Vendor/
 
-
+    cp -a $copypath $OUT_DIR/Vendor/
+  fi
 }
 
 COMMON_COMMANDS+=("Build_Exynos_Vendor")
