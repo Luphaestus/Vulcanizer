@@ -23,7 +23,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 rm -rf $SPECIFIC_FILES
-rm -rf OUT_DIR
+rm -rf $OUT_DIR
 
 UI "t|Loading Scripts"
 for script in $(find $ASSETS_DIR -type f -name "*.sh"); do
