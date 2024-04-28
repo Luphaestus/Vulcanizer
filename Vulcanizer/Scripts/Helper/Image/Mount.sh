@@ -1,6 +1,8 @@
 Mount(){
   local image=$1
   local mount_dir=$2
+  local size=$3
+  size="${size:-0}"
 
   if Is_Extracted "$mount_dir" ; then
     return 0
@@ -23,8 +25,7 @@ Mount(){
 
   current_size=$(du -m "$1" | awk '{print $1}')
   e2fsck -fa $1 >/dev/null
-
-  fixed_size=500
+  fixed_size=$((500 + $size))
   new_size=$((current_size + fixed_size))
   resize2fs $1 ${new_size}M  2>&1 | grep -v resize2fs >/dev/null
   mkdir -p "$2" >/dev/null

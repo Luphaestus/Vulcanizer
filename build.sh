@@ -2,6 +2,7 @@
 set -e
 
 COMMON_COMMANDS=()
+LATE_COMMON_COMMANDS=()
 
 CONFIG=./config.sh
 . $CONFIG
@@ -32,6 +33,11 @@ for script in $(find $ASSETS_DIR -type f -name "*.sh"); do
   UI "d"
 done
 for cmd in "${COMMON_COMMANDS[@]}"; do
+  echo " "
+  eval "$cmd"
+done
+
+for cmd in "${LATE_COMMON_COMMANDS[@]}"; do
   echo " "
   eval "$cmd"
 done

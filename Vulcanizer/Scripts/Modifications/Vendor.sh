@@ -22,7 +22,7 @@ Vendor_Cheksum()
   Checksum_Source Vendor $images 2>/dev/null
   md5sum "$(realpath "$BASH_SOURCE")" >> $images
   echo "Patch Vendor: "$PATCH_VENDOR >> $images
-  echo "Common Image: "$COMMON_VENDOR >> $images
+  echo "Common Image: "$COMMON >> $images
   md5sum $RESOURCES_DIR/Vendor/* >> $images
   
   
@@ -31,7 +31,7 @@ Vendor_Cheksum()
 }
 
 
-Build_Exynos_Vendor()
+Build_Vendor()
 {
 
   if [[ $CREATE_VENDOR != "y" ]]; then
@@ -56,7 +56,7 @@ Build_Exynos_Vendor()
         rm -rf "$WORKING_DIR/Vendor/"
         mkdir -p "$WORKING_DIR/Vendor/"
 
-        Get_Target "Vendor" "y" "Y" $COPYVENDOR
+        Get_Target "Vendor" "y" "y" $COPYVENDOR
         Get_Source "Vendor" "y" "y" $COPYVENDOR
       fi
     
@@ -81,7 +81,7 @@ Build_Exynos_Vendor()
         echo " "
       fi
 
-      if [[ $COMMON_VENDOR == "y" ]]; then
+      if [[ $COMMON == "y" ]]; then
         UI "h|Creating Common Vendors"
         MOUNTED_COMMON_IMAGES=("${Source_Mount[@]}")
         Common_Image "$WORKING_DIR/Vendor/Shared/CommomVendor" ${Source_Path[0]} Vendor
@@ -97,7 +97,7 @@ Build_Exynos_Vendor()
       Unmount_Source "Vendor"
 
       if [[ $COMPRESS == "y" ]]; then
-        if [[ $COMMON_VENDOR == "y" ]]; then
+        if [[ $COMMON == "y" ]]; then
             Compress_Image "${commonmount%/*}"/out/$(basename "$commonmount").img
         else
           for mount in "${Source_Mount[@]}"; do
@@ -116,12 +116,12 @@ Build_Exynos_Vendor()
   fi
   echo " "
   UI "h|Moving build to output folder"
-  Get_Target "Vendor" "y" "Y" "n"
+  Get_Target "Vendor" "y" "y" "n"
   Get_Source "Vendor" "y" "y" "n"
 
 
 
-  if [[ $COMMON_VENDOR != "y" ]]; then
+  if [[ $COMMON != "y" ]]; then
     for mount in "${Source_Mount[@]}"; do
       UI "Copying: $(basename "$mount")"
       if [[ $COMPRESS == "y" ]]; then
@@ -148,4 +148,4 @@ Build_Exynos_Vendor()
   fi
 }
 
-COMMON_COMMANDS+=("Build_Exynos_Vendor")
+COMMON_COMMANDS+=("Build_Vendor")

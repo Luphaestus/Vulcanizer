@@ -4,16 +4,20 @@ Get_Target()
   local mount=$2
   local reset=$3
   local copymount=$4
+  local size=$5
 
   if [[ $reset = "y" ]]; then
     Target_Path=()
     Target_Mount=()
   fi
+
+
   UI "Retrieving: Target $image_name" "\n"
   INDENT=$INDENT_ALT
   if [ -f "$STOCK_DIR/$image_name/Target/$TARGET.img" ]; then
     imgsuffix=.img
   fi
+
 
 
   if [[ $copymount == "y" ]]; then
@@ -25,10 +29,12 @@ Get_Target()
     UI "d"
   fi
 
+
+
   if [[ $mount == "y" && $imgsuffix == ".img" ]]; then
     if [[ $copymount == "y" ]]; then
       mkdir -p $WORKING_DIR/$image_name/Target/$TARGET
-      Mount $WORKING_DIR/$image_name/Target/$TARGET.img $WORKING_DIR/$image_name/Target/$TARGET
+      Mount $WORKING_DIR/$image_name/Target/$TARGET.img $WORKING_DIR/$image_name/Target/$TARGET $size
     fi 
     Target_Mount=$WORKING_DIR/$image_name/Target/$TARGET
   elif [[ $imgsuffix != ".img" ]]; then
