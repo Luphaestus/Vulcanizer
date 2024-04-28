@@ -1,5 +1,5 @@
 #Common
-COMPRESS="y"
+COMPRESS="n"
 FOR_EXYNOS="y"
 EROFS="y"
 
@@ -16,13 +16,14 @@ CREATE_VENDOR="y"
 COMMON_VENDOR="y"
 PATCH_VENDOR="y"
 FORCE_VENDOR="n"
-#test
+
+#Test Vendor Vars
 SKIPVENDORCHECKSUM="n"
+COPYVENDOR="y"
 
 VENDOR_DELETE="C2xDelete"
 VENDOR_COPY="C2xCopy"
 VENDOR_MISC="C2xMisc"
-
 
 #Project Structure
 ROOT_DIR=$(dirname "$(readlink -f "$0")")
