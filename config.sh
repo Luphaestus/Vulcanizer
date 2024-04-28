@@ -1,5 +1,5 @@
 #Common
-COMPRESS="n"
+COMPRESS="y"
 FOR_EXYNOS="y"
 EROFS="y"
 

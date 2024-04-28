@@ -140,8 +140,11 @@ Build_Exynos_Vendor()
       copypath=$WORKING_DIR/Vendor/Shared/out/CommomVendor.img
     fi
     mkdir -p $OUT_DIR/Vendor/
-
-    cp -a $copypath $OUT_DIR/Vendor/
+    cp -aL $copypath $OUT_DIR/Vendor/
+    for mount in "${Source_Mount[@]}"; do
+      mkdir -p $SPECIFIC_FILES/Vendor/$(basename $mount)/
+      cp -a $mount-specific/* $SPECIFIC_FILES/Vendor/$(basename $mount)/
+    done
   fi
 }
 
