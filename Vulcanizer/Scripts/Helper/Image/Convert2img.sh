@@ -106,9 +106,7 @@ Convert2img ()
   elif [[ ! -f $source_dir.img ]]; then
     Convert2Ext4Fs $outimg $source_dir
   else
-    if [[ $COMPRESS != "y" ]]; then
-      ln -s $source_dir.img $outimg
-    fi
+    ln -s $source_dir.img $outimg
   fi
 
 }
