@@ -40,21 +40,26 @@ Build_Exynos_Vendor()
   UI "t|Building Vendor"
 
   if [[ $SKIPVENDORCHECKSUM != "y" ]]; then
-    local TestImagesChecksum=$STOCK_DIR/Vendor/TestCheksumImages.txt
-    local SaveChecksumImages=$STOCK_DIR/Vendor/CheksumImages.txt
-    Vendor_Cheksum $TestImagesChecksum $TestVendorConfig
+    if [[ $FORCE_VENDOR != "y" ]]; then
+      local TestImagesChecksum=$STOCK_DIR/Vendor/TestCheksumImages.txt
+      local SaveChecksumImages=$STOCK_DIR/Vendor/CheksumImages.txt
+      Vendor_Cheksum $TestImagesChecksum $TestVendorConfig
+    fi
     if [[ "$FORCE_VENDOR" == "y" ]] || ! Compare_Cheksum "$TestImagesChecksum" "$SaveChecksumImages"; then
       echo " "
       UI "h|Retrieving Stock Vendors"
-      Unmount_All "$WORKING_DIR/Vendor/"
-      rm -rf "$WORKING_DIR/Vendor/"
-      mkdir -p "$WORKING_DIR/Vendor/"
+
       ##test var##
       copyVendor="y"
-      
-      Get_Target "Vendor" "y" "Y" $copyVendor
-      Get_Source "Vendor" "y" "y" $copyVendor
-  
+
+      if [[ copyVendor!="y" ]]; then
+        Unmount_All "$WORKING_DIR/Vendor/"
+        rm -rf "$WORKING_DIR/Vendor/"
+        mkdir -p "$WORKING_DIR/Vendor/"
+
+        Get_Target "Vendor" "y" "Y" $copyVendor
+        Get_Source "Vendor" "y" "y" $copyVendor
+      fi
     
       PATCH_DIRS=("${Source_Mount[@]}")
       PATCH_MODEL=()  
@@ -91,14 +96,17 @@ Build_Exynos_Vendor()
       UI "h|Cleaning Up"
       Unmount_Target "Vendor"
       Unmount_Source "Vendor"
-      mv "$TestImagesChecksum" "$SaveChecksumImages"
+
+      if [[ $FORCE_VENDOR != "y" ]]; then
+        mv "$TestImagesChecksum" "$SaveChecksumImages"
+      fi
 
       if [[ $COMPRESS == "y" ]]; then
         if [[ $COMMON_VENDOR == "y" ]]; then
-          Common_Image "$WORKING_DIR/Vendor/Shared/CommomVendor"
+            Compress_Image "${commonmount%/*}"/out/$(basename "$commonmount").img
         else
           for mount in "${Source_Mount[@]}"; do
-            Convert2img $mount vendor/
+            Compress_Image  "${mount%/*}"/out/$(basename "$mount").img
           done
         fi
       fi
@@ -112,43 +120,11 @@ Build_Exynos_Vendor()
   Get_Target "Vendor" "y" "Y" "n"
   Get_Source "Vendor" "y" "y" "n"
   
-  Out_images=()
-  
-  if [[ $COMMON_VENDOR == "y" ]]; then
-    for mount in "${Source_Mount[@]}"; do   
-      if [[ $EROFS == "y" ]]; then
-        dest=$SPECIFIC_FILES/$model/
-      else
-        dest=$OUT_DIR/Vendor/$model/
-      fi
-      model=$(basename "$mount")
-      mkdir -p $dest
-      cp -a $mount-specific/* $dest
-    done
-    
-   #if [[ $EROFS == "y" ]]; then
-   #  Out_images+=("$WORKING_DIR/Vendor/Shared/CommomVendor.erofs")
-   #else
-   #  if [[ "${Source_Path[0]}" == *.img ]]; then
-   #    Out_images+=("$WORKING_DIR/Vendor/Shared/CommomVendor.img")
-   #  else
-   #    Out_images+=("$WORKING_DIR/Vendor/Shared/CommomVendor")
-   #  fi      
-   #fi
-  else
-    for path in "${Source_Path[@]}"; do   
-      Out_images+=("$path")    
-    done
-  fi
-  #for image in "${Out_images[@]}"; do
-  #  if [  -d "$image" ]; then
-  #    Folder_To_Ext4Fs $image $image.img
-  #    image=$image.img
-  #  fi
-  #  if [[ $EROFS == "y" ]]; then
-  #    echo "Create Erofs"
-  #  fi 
-  #done
+
+
+
+
+
 }
 
 COMMON_COMMANDS+=("Build_Exynos_Vendor")

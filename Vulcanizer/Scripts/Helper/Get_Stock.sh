@@ -9,7 +9,7 @@ Get_Target()
     Target_Path=()
     Target_Mount=()
   fi
-  UI "Retrieving Target $image_name" "\n"
+  UI "Retrieving: Target $image_name" "\n"
   INDENT=$INDENT_ALT
   if [ -f "$STOCK_DIR/$image_name/Target/$TARGET.img" ]; then
     imgsuffix=.img
@@ -75,7 +75,7 @@ Get_Source()
 
   for model in "${MODEL[@]}"; do
     INDENT=""
-    UI "Retrieving $model $image_name" "\n"
+    UI "Retrieving: $model $image_name" "\n"
     INDENT=$INDENT_ALT
 
     if [ -f  "$STOCK_DIR/$image_name/Source/$model.img"  ]; then
