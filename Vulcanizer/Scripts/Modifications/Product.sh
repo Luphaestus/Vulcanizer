@@ -1,8 +1,26 @@
+Product_Cheksum()
+{
+  images=$1
+  UI "Making Product Checksums"
+  > "$images"
+  chown "${SUDO_USER:-$(whoami)}" "$images"
+
+  Checksum_Target Product $images 2>/dev/null
+  Checksum_Source Product $images 2>/dev/null
+  md5sum "$(realpath "$BASH_SOURCE")" >> $images
+  echo "Common Image: "$COMMON >> $images
+  echo "COMPRESS: "$COMPRESS >> $images
+  md5sum $RESOURCES_DIR/Vendor/* >> $images
+
+  UI "d"
+}
+
 Build_Product()
 {
   if [[ $CREATE_PRODUCT != "y" ]]; then
     return 0
   fi
+
   UI "t|Building Vendor"
   UI "h|Retrieving Product"
   Unmount_All "$WORKING_DIR/Product/"
