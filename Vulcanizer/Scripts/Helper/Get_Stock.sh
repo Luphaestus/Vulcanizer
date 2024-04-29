@@ -57,9 +57,11 @@ Checksum_Target() {
   locations=("$@")
 
   if [ -f "$STOCK_DIR/$image_name/Target/$TARGET.img" ]; then
-    checksum=$(md5sum "$STOCK_DIR/$image_name/Target/$TARGET.img")
+    #checksum=$(md5sum "$STOCK_DIR/$image_name/Target/$TARGET.img")
+    checksum=$(stat -c %Y "$STOCK_DIR/$image_name/Target/$TARGET.img")
   else
-    checksum=$(tar c "$STOCK_DIR/$image_name/Target/$TARGET" | md5sum)
+    #checksum=$(tar c "$STOCK_DIR/$image_name/Target/$TARGET" | md5sum)
+    checksum=$(stat -c %Y "$STOCK_DIR/$image_name/Target/$TARGET")
   fi
 
   for location in "${locations[@]}"; do
@@ -128,9 +130,11 @@ Checksum_Source()
   
   for model in "${MODEL[@]}"; do
     if [ -f  "$STOCK_DIR/$image_name/Source/$model.img"  ]; then
-      checksum=$(md5sum $STOCK_DIR/$image_name/Source/$model.img)
-    else 
-      checksum=$(tar c  $STOCK_DIR/$image_name/Source/$model | md5sum)
+      checksum=$(stat -c %Y "$STOCK_DIR/$image_name/Source/$model.img")
+      #checksum=$(md5sum $STOCK_DIR/$image_name/Source/$model.img)
+    else
+      checksum=$(stat -c %Y "$STOCK_DIR/$image_name/Source/$model")
+      #checksum=$(tar c  $STOCK_DIR/$image_name/Source/$model | md5sum)
     fi
     for location in "${locations[@]}"; do
       echo "$checksum" >> "$location"

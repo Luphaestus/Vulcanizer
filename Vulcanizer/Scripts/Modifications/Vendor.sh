@@ -23,6 +23,7 @@ Vendor_Cheksum()
   md5sum "$(realpath "$BASH_SOURCE")" >> $images
   echo "Patch Vendor: "$PATCH_VENDOR >> $images
   echo "Common Image: "$COMMON >> $images
+  echo "COMPRESS: "$COMPRESS >> $images
   md5sum $RESOURCES_DIR/Vendor/* >> $images
   
   
@@ -142,8 +143,8 @@ Build_Vendor()
     mkdir -p $OUT_DIR/Vendor/
     cp -aL $copypath $OUT_DIR/Vendor/
     for mount in "${Source_Mount[@]}"; do
-      mkdir -p $SPECIFIC_FILES/Vendor/$(basename $mount)/
-      cp -a $mount-specific/* $SPECIFIC_FILES/Vendor/$(basename $mount)/
+      mkdir -p $SPECIFIC_FILES/$(basename $mount)/Vendor/
+      cp -a $mount-specific/* $SPECIFIC_FILES/$(basename $mount)/Vendor/
     done
   fi
 }
