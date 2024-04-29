@@ -13,11 +13,10 @@ Build_Odm()
   done
 
   if [[ $COMMON == "Y" ]]; then
-
     for item in "$SPECIFIC_FILES/"*; do
-      for item in "$WORKING_DIR/Odm/"*; do
-        if [[ $item != $SPECIFIC_FILES ]]; then
-          rm -r $item
+      for clean in "$WORKING_DIR/Odm/"*; do
+        if [[ $clean != $SPECIFIC_FILES ]]; then
+          rm -r $clean
         fi
       done
       Get_Target "Odm" "y" "y" "y" 3000

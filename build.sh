@@ -23,6 +23,11 @@ if [ "$EUID" -ne 0 ]; then
   exec sudo "$0" "$@"
 fi
 
+if [ ${#MODEL[@]} -eq 1 ] && [[ $COMMON == "y" ]]; then
+  UI "!Common images only work with two or more vendors, turning off..."
+  COMPRESS="n"
+fi
+
 rm -rf $SPECIFIC_FILES
 rm -rf $OUT_DIR
 

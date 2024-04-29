@@ -16,11 +16,11 @@ Mount(){
 
   UI "Mounting: $(basename "$image" | cut -d '.' -f 1)"
   if mountpoint -q "$mount_dir"; then
-      UI "f"
-      UI "!$(basename "$image" | cut -d '.' -f 1) is already mounted."
-      Unmount $mount_dir
-      rm -rf $mount_dir
-      UI "Mounting: $(basename "$image" | cut -d '.' -f 1)"
+    UI "f"
+    UI "!$(basename "$image" | cut -d '.' -f 1) is already mounted."
+    Unmount $mount_dir
+    rm -rf $mount_dir
+    UI "Mounting: $(basename "$image" | cut -d '.' -f 1)"
   fi
 
   current_size=$(du -m "$1" | awk '{print $1}')

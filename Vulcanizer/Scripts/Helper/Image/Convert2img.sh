@@ -5,8 +5,8 @@ process_file() {
     local selabel=$(echo "$text" | cut -d " " -f1)
 
     if [ "$file" = "." ]; then
-        sudo echo "/$mountpoint $selabel" >> "$contexts"
-        sudo stat -c "/ %u %g %a" "$file" >> "$config"
+      sudo echo "/$mountpoint $selabel" >> "$contexts"
+      sudo stat -c "/ %u %g %a" "$file" >> "$config"
     else
       if [[ $mountpoint == "/" ]]; then
         local contextmount=""

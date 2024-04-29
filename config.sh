@@ -1,7 +1,7 @@
 #Common
-COMPRESS="y"
-FOR_EXYNOS="y"
-EROFS="y"
+COMPRESS="n"
+FOR_EXYNOS="n"
+EROFS="n"
 COMMON="y"
 
 #Exnos
@@ -9,23 +9,28 @@ EXYNOS_TARGET="p3s"
 EXYNOS_MODELS=("c1s" c2s c1slte c2slte)
 
 #Snapdragon
-SNAPDRAGON_TARGET="something"
-SNAPDRAGON_MODELS=(c2s)
+SNAPDRAGON_TARGET="p3s"
+SNAPDRAGON_MODELS=(c2s c2slte)
 
 #Vendor
-CREATE_VENDOR="y"
+CREATE_VENDOR="n"
 PATCH_VENDOR="y"
 FORCE_VENDOR="n"
+#patch files
+VENDOR_DELETE="990/Delete"
+VENDOR_COPY="990/Copy"
+VENDOR_MISC="990/Misc"
 #Test Vendor Vars
 SKIPVENDORCHECKSUM="n"
 COPYVENDOR="y"
 
-#Odm
-CREATE_ODM="y"
+#Product
+CREATE_PRODUCT="y"
+PRODUCT_DELETE="990/Delete"
+PRODUCT_MISC="990/Misc"
 
-VENDOR_DELETE="C2xDelete"
-VENDOR_COPY="C2xCopy"
-VENDOR_MISC="C2xMisc"
+#Odm
+CREATE_ODM="n"
 
 #Project Structure
 ROOT_DIR=$(dirname "$(readlink -f "$0")")

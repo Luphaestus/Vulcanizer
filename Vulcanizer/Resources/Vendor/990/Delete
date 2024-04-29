@@ -25,3 +25,4 @@
 "lib64/vendor.samsung.hardware.vibrator@2.2.so"
 "bin/hw/vendor.samsung.hardware.vibrator@2.2-service"
 "etc/init/vendor.samsung.hardware.vibrator@2.2-service.rc"
+#eof

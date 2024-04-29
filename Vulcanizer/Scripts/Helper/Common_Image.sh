@@ -21,63 +21,60 @@ Common_Image()
   fi
 
   for ((index = 1; index < ${#MOUNTED_COMMON_IMAGES[@]}; index++)); do
-      mountedimg="${MOUNTED_COMMON_IMAGES[$index]}"
-      UI "diff: $mountedimg $commonmount"
-      echo " "
-      INDENT=$INDENT_ALT
-      diff_output=$(sudo diff -rq "$mountedimg" "$commonmount" 2>/dev/null | grep differ | awk '{print $2}')
-      if [[ ! -z "${diff_output// }" ]]; then
-        while IFS= read -r line; do
-          trimmed_string="${line#${MOUNTED_COMMON_IMAGES[$index]}/}"
-          echo -ne $OVERWRITE$INDENT$trimmed_string
-          for ((i=$index; i>=0; i--)) do
+    mountedimg="${MOUNTED_COMMON_IMAGES[$index]}"
+    UI "diff: $mountedimg $commonmount"
+    echo " "
+    INDENT=$INDENT_ALT
+    diff_output=$(sudo diff -rq "$mountedimg" "$commonmount" 2>/dev/null | grep differ | awk '{print $2}')
+    if [[ ! -z "${diff_output// }" ]]; then
+      while IFS= read -r line; do
+        trimmed_string="${line#${MOUNTED_COMMON_IMAGES[$index]}/}"
+        echo -ne $OVERWRITE$INDENT$trimmed_string
+        for ((i=$index; i>=0; i--)) do
+          img_mounted=${MOUNTED_COMMON_IMAGES[$i]}
+          mkdir -p "$(dirname "$img_mounted-specific/$trimmed_string")"
+          sudo cp -a "$img_mounted/$trimmed_string" "$img_mounted-specific/$trimmed_string"
+        done
+        rm "$commonmount/$trimmed_string"
+        if [[ $EROFS == "y" ]]; then
+          erofsSymlinks+=("/odm/$imgname/$trimmed_string $commonmount/$trimmed_string")
+        fi
+      done <<< "$diff_output"
+    else
+        UI "!No differing files found."
+    fi
+    echo -e $OVERWRITE$SUCCESS_FG$INDENT"Successfully resolved differing files$RESET"
+    diff_output=$(diff -rq "$mountedimg" "$commonmount" 2>/dev/null | grep "Only in"  | awk '{gsub(/:/,"/",$3); gsub(/:/,"/",$4); print $3, $4}'| tr -d ' ')
+    if [[ ! -z "${diff_output// }" ]]; then
+      while IFS= read -r line; do
+        if echo "$line" | grep -q "$commonmount"; then
+          trimmed_string="${line#$commonmount/}"
+          echo -ne "$OVERWRITE$INDENT Only in $trimmed_string"
+          for ((i=$index; i>=0; i--))  do
             img_mounted=${MOUNTED_COMMON_IMAGES[$i]}
-            mkdir -p "$(dirname "$img_mounted-specific/$trimmed_string")"
-            sudo cp -a "$img_mounted/$trimmed_string" "$img_mounted-specific/$trimmed_string"
+            if [ -e "$img_mounted/$trimmed_string" ] && [ ! -e "$img_mounted-specific/$trimmed_string" ]; then
+              mkdir -p "$(dirname "$img_mounted-specific/$trimmed_string")"
+              cp -a "$img_mounted/$trimmed_string"  "$img_mounted-specific/$trimmed_string"
+            fi
           done
-
-          rm "$commonmount/$trimmed_string"
-          if [[ $EROFS == "y" ]]; then
-            erofsSymlinks+=("/odm/$imgname/$trimmed_string $commonmount/$trimmed_string")
-          fi
-
-        done <<< "$diff_output"
-      else
-          UI "!No differing files found."
-      fi
-      echo -e $OVERWRITE$SUCCESS_FG$INDENT"Successfully resolved differing files$RESET"
-      diff_output=$(diff -rq "$mountedimg" "$commonmount" 2>/dev/null | grep "Only in"  | awk '{gsub(/:/,"/",$3); gsub(/:/,"/",$4); print $3, $4}'| tr -d ' ')
-      if [[ ! -z "${diff_output// }" ]]; then
-        while IFS= read -r line; do
-          if echo "$line" | grep -q "$commonmount"; then
-            trimmed_string="${line#$commonmount/}"
-            echo -ne "$OVERWRITE$INDENT Only in $trimmed_string"
-            for ((i=$index; i>=0; i--))  do
-              img_mounted=${MOUNTED_COMMON_IMAGES[$i]}
-              if [ -e "$img_mounted/$trimmed_string" ] && [ ! -e "$img_mounted-specific/$trimmed_string" ]; then
-                  mkdir -p "$(dirname "$img_mounted-specific/$trimmed_string")"
-                  cp -a "$img_mounted/$trimmed_string"  "$img_mounted-specific/$trimmed_string"
-              fi
-            done
-              rm -rf "$commonmount/$trimmed_string"
-              if [[ $EROFS == "y" ]]; then
-                erofsSymlinks+=("/odm/$imgname/$trimmed_string $commonmount/$trimmed_string")
-              fi
-          else
-            img_mounted=${MOUNTED_COMMON_IMAGES[$index]}
-
-            trimmed_string="${line#${MOUNTED_COMMON_IMAGES[$index]}/}"
-            echo -ne "$OVERWRITE$INDENT Only in $line"
-            mkdir -p  "$(dirname "$img_mounted-specific/$trimmed_string")"
-            cp -a "$img_mounted/$trimmed_string" "$img_mounted-specific/$trimmed_string"
+            rm -rf "$commonmount/$trimmed_string"
             if [[ $EROFS == "y" ]]; then
               erofsSymlinks+=("/odm/$imgname/$trimmed_string $commonmount/$trimmed_string")
             fi
+        else
+          img_mounted=${MOUNTED_COMMON_IMAGES[$index]}
+          trimmed_string="${line#${MOUNTED_COMMON_IMAGES[$index]}/}"
+          echo -ne "$OVERWRITE$INDENT Only in $line"
+          mkdir -p  "$(dirname "$img_mounted-specific/$trimmed_string")"
+          cp -a "$img_mounted/$trimmed_string" "$img_mounted-specific/$trimmed_string"
+          if [[ $EROFS == "y" ]]; then
+            erofsSymlinks+=("/odm/$imgname/$trimmed_string $commonmount/$trimmed_string")
           fi
-          done <<< "$diff_output"
-      else
-          UI "!No unique files found."
-      fi
+        fi
+        done <<< "$diff_output"
+    else
+      UI "!No unique files found."
+    fi
     echo -e $OVERWRITE$SUCCESS_FG$INDENT"Successfully resolved unique files$RESET"
     INDENT=""
   done

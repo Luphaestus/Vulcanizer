@@ -1,12 +1,12 @@
 #MOVE WHEN DOING SYSTEM PATCHES
 deleteTag()
 {
-    tagname=$1
-    start=$(grep -n "$tagname" "$manifestxml" | awk -F: '{print $1-1}')
-    first=$(sed -n "${start},\$p" "$manifestxml" | grep -n "</hal>" | head -n 1 | awk -F: '{print $1}')
-    firsttotal=$((start + first-1))
-    sed -i "${start},${firsttotal}d" "$manifestxml"
-    echo "manifest.xml : $start - $firsttotal"
+  tagname=$1
+  start=$(grep -n "$tagname" "$manifestxml" | awk -F: '{print $1-1}')
+  first=$(sed -n "${start},\$p" "$manifestxml" | grep -n "</hal>" | head -n 1 | awk -F: '{print $1}')
+  firsttotal=$((start + first-1))
+  sed -i "${start},${firsttotal}d" "$manifestxml"
+  echo "manifest.xml : $start - $firsttotal"
 }
 
 
@@ -25,8 +25,6 @@ Vendor_Cheksum()
   echo "Common Image: "$COMMON >> $images
   echo "COMPRESS: "$COMPRESS >> $images
   md5sum $RESOURCES_DIR/Vendor/* >> $images
-  
-  
 
   UI "d"
 }
@@ -51,7 +49,6 @@ Build_Vendor()
       UI "h|Retrieving Stock Vendors"
 
       ##test var##
-
       if [[ $COPYVENDOR == "y" ]]; then
         Unmount_All "$WORKING_DIR/Vendor/"
         rm -rf "$WORKING_DIR/Vendor/"
@@ -60,14 +57,15 @@ Build_Vendor()
         Get_Target "Vendor" "y" "y" $COPYVENDOR
         Get_Source "Vendor" "y" "y" $COPYVENDOR
       fi
-    
-      PATCH_DIRS=("${Source_Mount[@]}")
-      PATCH_MODEL=()  
-      for dir in "${Patch_Dirs[@]}"; do
-        PATCH_MODEL+=($(basename "$dir"))
-      done
+
       echo " "
       if [[ $PATCH_VENDOR == "y" ]]; then
+        PATCH_DIRS=("${Source_Mount[@]}")
+        PATCH_MODEL=()
+        for dir in "${Patch_Dirs[@]}"; do
+          PATCH_MODEL+=($(basename "$dir"))
+        done
+
         UI "h|Patching Vendor(s)"
         UI Running Delete Patches
         echo " "
@@ -99,7 +97,7 @@ Build_Vendor()
 
       if [[ $COMPRESS == "y" ]]; then
         if [[ $COMMON == "y" ]]; then
-            Compress_Image "${commonmount%/*}"/out/$(basename "$commonmount").img
+          Compress_Image "${commonmount%/*}"/out/$(basename "$commonmount").img
         else
           for mount in "${Source_Mount[@]}"; do
             Compress_Image  "${mount%/*}"/out/$(basename "$mount").img
@@ -119,8 +117,6 @@ Build_Vendor()
   UI "h|Moving build to output folder"
   Get_Target "Vendor" "y" "y" "n"
   Get_Source "Vendor" "y" "y" "n"
-
-
 
   if [[ $COMMON != "y" ]]; then
     for mount in "${Source_Mount[@]}"; do

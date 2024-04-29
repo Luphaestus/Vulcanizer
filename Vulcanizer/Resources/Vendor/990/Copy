@@ -26,3 +26,4 @@ lib64/vendor.samsung.hardware.vibrator-V3-ndk_platform.so
 bin/hw/vendor.samsung.hardware.vibrator-service
 etc/init/vendor.samsung.hardware.vibrator-default.rc
 etc/vintf/manifest/vendor.samsung.hardware.vibrator-default.xml
+#eof

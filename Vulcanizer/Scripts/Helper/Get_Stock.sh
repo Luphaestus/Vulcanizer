@@ -7,8 +7,8 @@ Get_Target()
   local size=$5
 
   if [[ $reset = "y" ]]; then
-    Target_Path=()
-    Target_Mount=()
+    Target_Path=""
+    Target_Mount=""
   fi
 
 
@@ -85,9 +85,9 @@ Get_Source()
     INDENT=""
     UI "Retrieving: $model $image_name" "\n"
     INDENT=$INDENT_ALT
-
+    imgsuffix=""
     if [ -f  "$STOCK_DIR/$image_name/Source/$model.img"  ]; then
-      imgsuffix=.img
+      local imgsuffix=.img
     fi
     if [[ $copymount == "y" ]]; then
       Unmount $WORKING_DIR/$image_name/Source/$model/$model$imgsuffix
