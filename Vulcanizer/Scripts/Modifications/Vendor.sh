@@ -24,7 +24,8 @@ Vendor_Cheksum()
   echo "Patch Vendor: "$PATCH_VENDOR >> $images
   echo "Common Image: "$COMMON >> $images
   echo "COMPRESS: "$COMPRESS >> $images
-  md5sum $RESOURCES_DIR/Vendor/* >> $images
+    ##CHANGE TESTING
+  md5sum $RESOURCES_DIR/Vendor/990/* >> $images
 
   UI "d"
 }
@@ -54,7 +55,7 @@ Build_Vendor()
         rm -rf "$WORKING_DIR/Vendor/"
         mkdir -p "$WORKING_DIR/Vendor/"
 
-        Get_Target "Vendor" "y" "y" $COPYVENDOR
+        #Get_Target "Vendor" "y" "y" $COPYVENDOR
         Get_Source "Vendor" "y" "y" $COPYVENDOR
       fi
 
@@ -92,7 +93,7 @@ Build_Vendor()
       fi
 
       UI "h|Cleaning Up"
-      Unmount_Target "Vendor"
+      #Unmount_Target "Vendor"
       Unmount_Source "Vendor"
 
       if [[ $COMPRESS == "y" ]]; then
@@ -115,7 +116,7 @@ Build_Vendor()
   fi
   echo " "
   UI "h|Moving build to output folder"
-  Get_Target "Vendor" "y" "y" "n"
+  #Get_Target "Vendor" "y" "y" "n"
   Get_Source "Vendor" "y" "y" "n"
 
   if [[ $COMMON != "y" ]]; then

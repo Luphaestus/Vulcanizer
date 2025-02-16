@@ -38,7 +38,7 @@ Unmount() {
         UI "!!Unmount: $image_path must be a .img"
         exit 1
       fi
-      e2fsck -fa "$image_path" >/dev/null
+      #e2fsck -fa "$image_path" >/dev/null
       resize2fs -M "$image_path" 2>&1 | grep -v resize2fs >/dev/null
     fi
     UI "d"

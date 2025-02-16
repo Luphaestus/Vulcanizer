@@ -12,7 +12,7 @@ Build_Odm()
     fi
   done
 
-  if [[ $COMMON == "Y" ]]; then
+  if [[ $COMMON == "y" ]]; then
     for item in "$SPECIFIC_FILES/"*; do
       for clean in "$WORKING_DIR/Odm/"*; do
         if [[ $clean != $SPECIFIC_FILES ]]; then
@@ -23,12 +23,12 @@ Build_Odm()
       echo " "
       UI "h|Copying specific files"
       cp -aL $item/* "$Target_Mount"
+      echo $item
       echo -e $SUCCESS_FG"Successfully copied specific files$RESET"
       echo " "
-      UI "h|Cleaning Up"
       Convert2img $Target_Mount odm/
       Unmount_Target "Odm"
-      mkdir -p $OUT_DIR/Odm/
+      mkdir -p $OUT_DIR/$(basename "$item")/Odm/
       if [[ $COMPRESS == "y" ]]; then
         Compress_Image "${Target_Mount%/*}"/out/$(basename "$Target_Mount").img
         cp -a  "${Target_Mount%/*}"/out/compressed/* $OUT_DIR/$(basename "$item")/Odm/

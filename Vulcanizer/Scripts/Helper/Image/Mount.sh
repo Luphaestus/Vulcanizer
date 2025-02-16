@@ -24,7 +24,7 @@ Mount(){
   fi
 
   current_size=$(du -m "$1" | awk '{print $1}')
-  e2fsck -fa $1 >/dev/null
+  #e2fsck -fa $1 >/dev/null
   fixed_size=$((500 + $size))
   new_size=$((current_size + fixed_size))
   resize2fs $1 ${new_size}M  2>&1 | grep -v resize2fs >/dev/null
