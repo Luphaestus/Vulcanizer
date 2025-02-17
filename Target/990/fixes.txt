@@ -1,0 +1,125 @@
+DELETE START
+	#vendor
+		adb shell rm /vendor/bin/hw/vendor.samsung.hardware.tlc.blockchain@1.0-service
+		adb shell rm /vendor/bin/hw/vendor.samsung.hardware.tlc.ddar@1.0-service
+		adb shell rm /vendor/bin/hw/vendor.samsung.hardware.tlc.hdm@1.1-service
+		adb shell rm /vendor/bin/hw/vendor.samsung.hardware.tlc.iccc@1.0-service
+		adb shell rm /vendor/bin/hw/vendor.samsung.hardware.tlc.payment@1.0-service
+		adb shell rm /vendor/bin/hw/vendor.samsung.hardware.tlc.snap@1.0-service
+		adb shell rm /vendor/bin/hw/vendor.samsung.hardware.tlc.ucm@2.0-service
+		adb shell rm /vendor/bin/hw/vendor.samsung.hardware.vibrator@2.2-service
+		adb shell rm /vendor/etc/init/vendor.samsung.hardware.biometrics.face@2.0-service.rc
+		adb shell rm /vendor/etc/init/vendor.samsung.hardware.vibrator@2.2-service.rc
+		adb shell rm /vendor/lib64/vendor.samsung.hardware.vibrator@2.0.so
+		adb shell rm /vendor/lib64/vendor.samsung.hardware.vibrator@2.1.so
+		adb shell rm /vendor/lib64/vendor.samsung.hardware.vibrator@2.2.so
+	#system
+		/system/system/app/ARCore
+		/system/system/app/ARDrawing
+		/system/system/app/KidsHome_Installer
+		/system/system/lib/lib_SoundBooster_ver1100.so
+		/system/system/lib64/libAEBHDR_wrapper.camera.samsung.so
+		/system/system/lib64/libae_bracket_hdr.arcsoft.so
+		/system/system/lib64/libAIQSolution_MPISingleRGB40.camera.samsung.so
+		/system/system/lib64/libarcsoft_dualcam_portraitlighting.so
+		/system/system/lib64/libarcsoft_single_cam_glasses_seg.so
+		/system/system/lib64/libarcsoft_superresolution_bokeh.so
+		/system/system/lib64/libDualCamBokehCapture.camera.samsung.so
+		/system/system/lib64/libdualcam_refocus_image.so
+		/system/system/lib64/libenn_wrapper_system.so
+		/system/system/lib64/libhigh_dynamic_range_bokeh.so
+		/system/system/lib64/libhighres_enhancement.arcsoft.so
+		/system/system/lib64/libHREnhancementAPI.camera.samsung.so
+		/system/system/lib64/libhybridHDR_wrapper.camera.samsung.so
+		/system/system/lib64/libhybrid_high_dynamic_range.arcsoft.so
+		/system/system/lib64/libMPISingleRGB40.camera.samsung.so
+		/system/system/lib64/libMPISingleRGB40Tuning.camera.samsung.so
+		/system/system/lib64/libRelighting_API.camera.samsung.so
+		/system/system/lib64/lib_SoundBooster_ver1100.so
+		/system/system/priv-app/AREmojiEditor
+		/system/system/priv-app/CIDManager
+		/system/system/priv-app/DevGPUDriver-EX2200
+		/system/system/priv-app/GameDriver-EX2200
+		/system/system/priv-app/KmxService
+		/system/system/priv-app/KnoxGuard
+		/system/system/priv-app/OMCAgent5
+		/system/system/priv-app/SmartManager_v5
+		/system/system/priv-app/SmartManager_v6_DeviceSecurity
+		/system/system/saiv/beauty
+		/system/system/saiv/localtm
+		/system/system/saiv
+DELETE END
+COPY START
+	#vendor
+		sudo adb push bin/hw/rild /vendor/bin/hw/rild
+		sudo adb push bin/hw/vendor.samsung.hardware.biometrics.face@3.0-service           /vendor/bin/hw/vendor.samsung.hardware.biometrics.face@3.0-service
+		sudo adb push bin/hw/vendor.samsung.hardware.vibrator-service                      /vendor/bin/hw/vendor.samsung.hardware.vibrator-service
+		sudo adb push bin/hw/wpa_supplicant                                                /vendor/bin/hw/wpa_supplicant
+		sudo adb push default.prop                                                         /vendor/default.prop
+		sudo adb push etc/init/init.vendor.rilcommon.rc                                    /vendor/etc/init/init.vendor.rilcommon.rc
+		sudo adb push etc/init/vendor.samsung.hardware.biometrics.face@3.0-service.rc      /vendor/etc/init/vendor.samsung.hardware.biometrics.face@3.0-service.rc
+		sudo adb push etc/init/vendor.samsung.hardware.vibrator-default.rc                 /vendor/etc/init/vendor.samsung.hardware.vibrator-default.rc
+		sudo adb push etc/mtu-conf.xml                                                     /vendor/etc/mtu-conf.xml
+		sudo adb push etc/vintf/manifest/vendor.samsung.hardware.radio.exclude.slsi.xml    /vendor/etc/vintf/manifest/vendor.samsung.hardware.radio.exclude.slsi.xml
+		sudo adb push etc/vintf/manifest/vendor.samsung.hardware.radio_manifest_2_30.xml   /vendor/etc/vintf/manifest/vendor.samsung.hardware.radio_manifest_2_30.xml
+		sudo adb push etc/vintf/manifest/vendor.samsung.hardware.sehradio_manifest_2_30.xml/vendor/etc/vintf/manifest/vendor.samsung.hardware.sehradio_manifest_2_30.xml
+		sudo adb push etc/vintf/manifest/vendor.samsung.hardware.vibrator-default.xml      /vendor/etc/vintf/manifest/vendor.samsung.hardware.vibrator-default.xml
+		sudo adb push etc/vintf/manifest.xml                                               /vendor/etc/vintf/manifest.xml
+		sudo adb push lib/libsecril-client.so                                              /vendor/lib/libsecril-client.so
+		sudo adb push lib/libsec_semRil.so                                                 /vendor/lib/libsec_semRil.so
+		sudo adb push lib/libsemnativecarrierfeature.so                                    /vendor/lib/libsemnativecarrierfeature.so
+		sudo adb push lib/vendor.samsung.hardware.biometrics.face@3.0.so                   /vendor/lib/vendor.samsung.hardware.biometrics.face@3.0.so
+		sudo adb push lib64/libengmode_client.so                                           /vendor/lib64/libengmode_client.so
+		sudo adb push lib64/libril_sem.so                                                  /vendor/lib64/libril_sem.so
+		sudo adb push lib64/libsec-ril.so                                                  /vendor/lib64/libsec-ril.so
+		sudo adb push lib64/libsemnativecarrierfeature.so                                  /vendor/lib64/libsemnativecarrierfeature.so
+		sudo adb push lib64/libSemTelephonyProps.so                                        /vendor/lib64/libSemTelephonyProps.so
+		sudo adb push lib64/vendor.samsung.hardware.biometrics.face@3.0.so                 /vendor/lib64/vendor.samsung.hardware.biometrics.face@3.0.so
+		sudo adb push lib64/vendor.samsung.hardware.vibrator-V3-ndk_platform.so            /vendor/lib64/vendor.samsung.hardware.vibrator-V3-ndk_platform.so
+	#system
+		sudo cp -a ../Vulcan6.1/vulcans/system/bin/remotedisplay                                                help/system/bin/remotedisplay                                               &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/build.prop                                                       help/system/build.prop                                                      &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/cameradata                                                       help/system/cameradata                                                      &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/android.hardware.graphics.composer3-V1-ndk.so                help/system/lib/android.hardware.graphics.composer3-V1-ndk.so               &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/libhdcp2.so                                                  help/system/lib/libhdcp2.so                                                 &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/libhdcp_client_aidl.so                                       help/system/lib/libhdcp_client_aidl.so                                      &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/libremotedisplayservice.so                                   help/system/lib/libremotedisplayservice.so                                  &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/libremotedisplay_wfd.so                                      help/system/lib/libremotedisplay_wfd.so                                     &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/librepeater.so                                               help/system/lib/librepeater.so                                              &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/libsamsungSoundbooster_plus_legacy.so                        help/system/lib/libsamsungSoundbooster_plus_legacy.so                       &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/libsecuibc.so                                                help/system/lib/libsecuibc.so                                               &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/lib_SoundBooster_ver1050.so                                  help/system/lib/lib_SoundBooster_ver1050.so                                 &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/libstagefright_hdcp.so                                       help/system/lib/libstagefright_hdcp.so                                      &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/libstagefright.so                                            help/system/lib/libstagefright.so                                           &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/libsuperresolution.arcsoft.so                                help/system/lib/libsuperresolution.arcsoft.so                               &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/libsuperresolution_wrapper_v2.camera.samsung.so              help/system/lib/libsuperresolution_wrapper_v2.camera.samsung.so             &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/libtsmux.so                                                  help/system/lib/libtsmux.so                                                 &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/libvicom_conf.so                                             help/system/lib/libvicom_conf.so                                            &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/vendor.samsung.hardware.security.hdcp.wifidisplay-V2-ndk.so  help/system/lib/vendor.samsung.hardware.security.hdcp.wifidisplay-V2-ndk.so &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib/vendor.samsung_slsi.hardware.ExynosHWCServiceTW@1.0.so       help/system/lib/vendor.samsung_slsi.hardware.ExynosHWCServiceTW@1.0.so      &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libeden_wrapper_system.so                                  help/system/lib64/libeden_wrapper_system.so                                 &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libGeoTrans10.so                                           help/system/lib64/libGeoTrans10.so                                          &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libMultiFrameProcessing20.camera.samsung.so                help/system/lib64/libMultiFrameProcessing20.camera.samsung.so               &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libMultiFrameProcessing20Core.camera.samsung.so            help/system/lib64/libMultiFrameProcessing20Core.camera.samsung.so           &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libMultiFrameProcessing20Day.camera.samsung.so             help/system/lib64/libMultiFrameProcessing20Day.camera.samsung.so            &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libMultiFrameProcessing20Tuning.camera.samsung.so          help/system/lib64/libMultiFrameProcessing20Tuning.camera.samsung.so         &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libobjectcapture.arcsoft.so                                help/system/lib64/libobjectcapture.arcsoft.so                               &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libobjectcapture_jni.arcsoft.so                            help/system/lib64/libobjectcapture_jni.arcsoft.so                           &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libsamsungSoundbooster_plus_legacy.so                      help/system/lib64/libsamsungSoundbooster_plus_legacy.so                     &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libsnap_aidl.snap.samsung.so                               help/system/lib64/libsnap_aidl.snap.samsung.so                              &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/lib_SoundBooster_ver1050.so                                help/system/lib64/lib_SoundBooster_ver1050.so                               &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libstagefright.so                                          help/system/lib64/libstagefright.so                                         &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libStride.camera.samsung.so                                help/system/lib64/libStride.camera.samsung.so                               &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libsuperresolution.arcsoft.so                              help/system/lib64/libsuperresolution.arcsoft.so                             &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libsuperresolution_raw.arcsoft.so                          help/system/lib64/libsuperresolution_raw.arcsoft.so                         &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libsuperresolutionraw_wrapper_v2.camera.samsung.so         help/system/lib64/libsuperresolutionraw_wrapper_v2.camera.samsung.so        &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libsuperresolution_wrapper_v2.camera.samsung.so           help/system/lib64/libsuperresolution_wrapper_v2.camera.samsung.so        &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libSwIsp_core.camera.samsung.so                            help/system/lib64/libSwIsp_core.camera.samsung.so                           &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libSwIsp_wrapper_v1.camera.samsung.so                      help/system/lib64/libSwIsp_wrapper_v1.camera.samsung.so                     &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libuwsuperresolution.arcsoft.so                            help/system/lib64/libuwsuperresolution.arcsoft.so                           &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/libvicom_conf.so                                           help/system/lib64/libvicom_conf.so                                          &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/lib64/vendor.samsung_slsi.hardware.geoTransService@1.0.so        help/system/lib64/vendor.samsung_slsi.hardware.geoTransService@1.0.so       &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/saiv                                                             help/system/saiv                                                            &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/system_ext/apex/com.android.vndk.v30.apex                        help/system/system_ext/apex/com.android.vndk.v30.apex                       &&
+		sudo cp -a ../Vulcan6.1/vulcans/system/system_ext/etc/selinux/mapping/30.0.cil                          help/system/system_ext/etc/selinux/mapping/30.0.cil                         &&                       echo "done"
+COPY END

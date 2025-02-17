@@ -1,7 +1,0 @@
-cat $RESOURCES_DIR/Product/Velvet.apk/part-?? > priv-app/Velvet/Velvet.apk
-mkdir -p ../../framework_apk/target
-cp overlay/framework-res__auto_generated_rro_product.apk ../../framework_apk/target/
-Decompile_Apk ../../framework_apk/target/framework-res__auto_generated_rro_product.apk >/dev/null
-rm ../../framework_apk/target/framework-res__auto_generated_rro_product/res/values/*
-rm overlay/framework-res__auto_generated_rro_product.apk
-#eof

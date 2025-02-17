@@ -1,6 +1,0 @@
-#find . -depth -type f -name "*uwb*" -exec rm -f {} +
-cp -a $RESOURCES_DIR/Vendor/990/fstab.exynos990 etc/ ##CHANGE TESTING
-
-sed -i 's/fileencryption=ice,//g' "./etc/fstab.exynos990" ##CHANGE TESTING
-
-#eof
